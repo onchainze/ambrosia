@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d4ea0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ementa">
+<title>Ementa da Família</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f7fb; --surface:#ffffff; --ink:#14213d; --muted:#5d6b85; --line:#dde5f0;
+  --primary:#1d4ea0; --primary-ink:#ffffff; --primary-soft:#e3ecfb;
+  --lemon:#f4c430; --lemon-ink:#3a2e00;
+  --tomato:#d9482b; --olive:#4f7a2f; --olive-soft:#e5f0da;
+  --tile:#e8effb; --tile-dot:#b9cdf0;
+  --bar-p:#1d4ea0; --bar-h:#f4c430; --bar-g:#d9482b;
+  --shadow:0 1px 2px rgba(20,33,61,.06),0 4px 14px rgba(20,33,61,.07);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1526; --surface:#162038; --ink:#e9eef9; --muted:#9aa8c4; --line:#27344f;
+    --primary:#7ba5f2; --primary-ink:#0b1630; --primary-soft:#1d2c4d;
+    --lemon:#f4c430; --lemon-ink:#2a2100;
+    --tomato:#ff7b5f; --olive:#9cc97a; --olive-soft:#223019;
+    --tile:#1c2a4a; --tile-dot:#2f4673;
+    --bar-p:#7ba5f2; --bar-h:#f4c430; --bar-g:#ff7b5f;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1526; --surface:#162038; --ink:#e9eef9; --muted:#9aa8c4; --line:#27344f;
+  --primary:#7ba5f2; --primary-ink:#0b1630; --primary-soft:#1d2c4d;
+  --lemon:#f4c430; --lemon-ink:#2a2100;
+  --tomato:#ff7b5f; --olive:#9cc97a; --olive-soft:#223019;
+  --tile:#1c2a4a; --tile-dot:#2f4673;
+  --bar-p:#7ba5f2; --bar-h:#f4c430; --bar-g:#ff7b5f;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%;-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--primary);z-index:30}
+h1,h2,h3{font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:focus-visible,input:focus-visible,textarea:focus-visible,.card:focus-visible{outline:3px solid var(--lemon);outline-offset:2px}
+.wrap{max-width:680px;margin:0 auto}
+
+/* Cabeçalho */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--primary);color:var(--primary-ink)}
+:root[data-theme="dark"] .top, :root:not([data-theme="light"]) .top{}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+.brand{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.01em}
+.fam{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,.16);border-radius:999px;padding:3px}
+.fam button{width:34px;height:34px;border-radius:50%;font-size:1.2rem;font-weight:700;color:inherit}
+.fam button:active{background:rgba(255,255,255,.25)}
+.fam span{min-width:88px;text-align:center;font-weight:600;font-size:.92rem}
+
+main{padding:16px 16px 110px}
+
+/* Pesquisa e filtros */
+.search{width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:.9rem;white-space:nowrap}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.chip.alt.on{background:var(--lemon);border-color:var(--lemon);color:var(--lemon-ink)}
+.count{color:var(--muted);font-size:.9rem;margin:14px 2px 8px}
+
+/* Cartões de receitas */
+.list{display:grid;gap:10px}
+@media(min-width:560px){.list{grid-template-columns:1fr 1fr}}
+.card{position:relative;display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:18px;padding:10px 12px 10px 10px;box-shadow:var(--shadow);cursor:pointer}
+.thumb{flex:none;width:68px;height:68px;border-radius:14px;display:grid;place-items:center;font-size:2rem;background-color:var(--tile);background-image:radial-gradient(var(--tile-dot) 1.6px,transparent 1.8px);background-size:9px 9px}
+.cbody{min-width:0;flex:1;padding-right:30px}
+.card h3{font-size:1.02rem;font-weight:700;margin-bottom:3px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--muted);font-size:.82rem}
+.tag{background:var(--olive-soft);color:var(--olive);padding:0 8px;border-radius:999px;font-weight:600}
+.nut{margin-top:4px;font-size:.84rem;color:var(--muted)}
+.nut b{color:var(--ink);font-weight:700}
+.heart{position:absolute;top:6px;right:6px;width:36px;height:36px;border-radius:50%;font-size:1.2rem;color:var(--line);display:grid;place-items:center}
+.heart.on{color:var(--tomato)}
+.empty{text-align:center;color:var(--muted);padding:36px 12px}
+.note{color:var(--muted);font-size:.82rem;margin-top:18px;text-align:center}
+
+.srcbadge{margin-top:5px;font-size:.78rem;font-weight:600;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:2px 9px;border-radius:8px}.srcbox{background:var(--primary-soft);border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:.92rem}.srcbox a{color:var(--primary);font-weight:700}.srcbox small{color:var(--muted)}
+.gl{display:grid;gap:10px}@media(min-width:560px){.gl{grid-template-columns:1fr 1fr}}#rlist.list{display:block}.grp{display:flex;align-items:baseline;gap:8px;font-size:1.3rem;margin:22px 2px 10px}.grp small{font-family:Figtree,system-ui,sans-serif;font-size:.85rem;color:var(--muted);font-weight:600}.flab{flex:none;align-self:center;font-weight:700;font-size:.82rem;color:var(--muted)}
+/* Semana */
+.bar{display:flex;gap:8px;margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:14px;font-weight:700;background:var(--primary);color:var(--primary-ink);flex:1}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
+.btn.lemon{background:var(--lemon);color:var(--lemon-ink)}
+.btn.warn{background:var(--tomato);color:#fff}
+.btn:active{transform:scale(.98)}
+.day{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
+.day header{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.day h3{font-size:1.2rem}
+.tot{font-size:.8rem;color:var(--primary);background:var(--primary-soft);padding:3px 10px;border-radius:999px;font-weight:600}
+.slot{padding:8px 0;border-top:1px solid var(--line)}
+.slabel{font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.item{display:flex;align-items:center;gap:8px;padding:6px 0}
+.item .nm{flex:1;min-width:0;font-weight:600;cursor:pointer}
+.item small{color:var(--muted);white-space:nowrap}
+.x{width:32px;height:32px;border-radius:50%;color:var(--muted);font-size:1.3rem;line-height:1}
+.x:active{background:var(--primary-soft)}
+.add{color:var(--primary);font-weight:700;font-size:.92rem;padding:6px 0}
+
+/* Compras */
+.prog{background:var(--primary-soft);border-radius:18px;padding:14px 16px;margin-bottom:14px}
+.prog .t{display:flex;justify-content:space-between;font-weight:700;margin-bottom:8px}
+.meter{height:10px;border-radius:99px;background:var(--surface);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--olive);border-radius:99px;transition:width .25s}
+.aisle{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:6px 14px 8px;margin-bottom:12px}
+.aisle h3{font-size:1.02rem;padding:10px 0 4px;color:var(--primary)}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);width:100%;text-align:left}
+.row:first-of-type{border-top:0}
+.box{flex:none;width:24px;height:24px;border-radius:8px;border:2px solid var(--primary);display:grid;place-items:center;color:var(--primary-ink);font-size:.9rem;font-weight:800}
+.row.done .box{background:var(--olive);border-color:var(--olive)}
+.row .q{margin-left:auto;font-weight:700;white-space:nowrap}
+.row.done .n,.row.done .q{text-decoration:line-through;color:var(--muted);font-weight:500}
+.addx{display:flex;gap:8px;margin:4px 0 14px}
+.addx .search{flex:1}
+.addx .btn{flex:none}
+.export{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:14px}
+.export h3{margin-bottom:10px;font-size:1.1rem}
+textarea.txt{width:100%;min-height:220px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:12px;font:.82rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical;margin:10px 0}
+
+/* Folhas (sheets) */
+#sheetwrap{position:fixed;inset:0;z-index:50;display:none;background:rgba(10,18,36,.55);align-items:flex-end;justify-content:center}
+#sheetwrap.show{display:flex}
+.sheet{width:100%;max-width:680px;max-height:92%;overflow-y:auto;background:var(--surface);border-radius:24px 24px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out;-webkit-overflow-scrolling:touch}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}.meter i{transition:none}}
+.shead{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.shead .thumb{width:72px;height:72px;font-size:2.2rem}
+.shead h2{font-size:1.4rem;flex:1}
+.shead .meta{margin-top:4px}
+.close{flex:none;width:40px;height:40px;border-radius:50%;background:var(--bg);font-size:1.3rem;align-self:flex-start}
+.nbox{background:var(--bg);border-radius:16px;padding:14px;margin:6px 0 16px}
+.kcal{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:2.1rem;font-weight:800;line-height:1}
+.kcal small{font-family:"Figtree",system-ui,sans-serif;font-size:.9rem;font-weight:500;color:var(--muted);margin-left:6px}
+.stack{display:flex;height:12px;border-radius:99px;overflow:hidden;margin:12px 0 10px}
+.stack i{display:block;height:100%}
+.ngrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.ngrid div{display:flex;justify-content:space-between;gap:8px;font-size:.92rem;padding:6px 10px;background:var(--surface);border-radius:10px}
+.ngrid b{font-weight:700}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.sheet h3.sec{font-size:1.1rem;margin:18px 0 8px}
+.ing{list-style:none;margin:0;padding:0}
+.ing li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.ing li:first-child{border-top:0}
+.ing b{white-space:nowrap}
+.steps{margin:0;padding-left:22px}
+.steps li{margin-bottom:8px;max-width:62ch}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.opt{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+.pick{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 4px;border-top:1px solid var(--line)}
+.pick .thumb{width:46px;height:46px;font-size:1.4rem;border-radius:11px}
+.pick .nm{flex:1;font-weight:600}
+.pick small{color:var(--muted);display:block;font-weight:400}
+
+/* Barra de separadores */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs .wrap{display:flex}
+.tab{flex:1;padding:9px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:.78rem;font-weight:600;color:var(--muted);position:relative}
+.tab span.ic{font-size:1.4rem;line-height:1.2}
+.tab.on{color:var(--primary)}
+.tab.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 4px 4px;background:var(--lemon)}
+.badge{position:absolute;top:4px;left:calc(50% + 8px);background:var(--tomato);color:#fff;border-radius:99px;font-size:.68rem;padding:1px 6px;font-weight:700}
+
+#toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;font-size:.9rem;opacity:0;pointer-events:none;transition:.2s;z-index:60}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Ementa da Família</div>
+    <div class="fam" role="group" aria-label="Número de pessoas">
+      <button data-a="fam" data-d="-1" aria-label="Menos uma pessoa">−</button>
+      <span id="famlabel">4 pessoas</span>
+      <button data-a="fam" data-d="1" aria-label="Mais uma pessoa">+</button>
+    </div>
+  </div>
+</header>
+<div class="wrap"><main id="app"></main></div>
+<nav class="tabs" aria-label="Navegação principal"><div class="wrap" id="tabs"></div></nav>
+<div id="sheetwrap" data-a="overlay"></div>
+<div id="toast" role="status"></div>
+
+<script>
+/* ============ DADOS ============ */
+const H="Frutas e legumes",T="Talho",P="Peixaria",L="Laticínios e ovos",M="Mercearia",B="Padaria",C="Congelados";
+const AISLES=[H,T,P,L,M,B,C,"Outros"];
+const DAYS=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+const SLOTS=["Pequeno-almoço","Almoço","Jantar"];
+const CATS=["Todas","Carne","Peixe","Sopa","Massa e arroz","Vegetariano","Pequeno-almoço","Sobremesa"];
+const r=(id,n,cat,t,e,veg,[k,p,h,a,g,f],ing,steps)=>({id,n,cat,t,e,veg,k,p,h,a,g,f,ing,steps});
+
+const RECIPES=[
+r("bacalhau-natas","Bacalhau com natas","Peixe",45,"🐟",false,[520,36,38,5,25,3],
+ [["Bacalhau demolhado",600,"g",P],["Batata",600,"g",H],["Cebola",2,"un",H],["Natas",400,"ml",L],["Leite",200,"ml",L],["Farinha",30,"g",M],["Manteiga",30,"g",L],["Queijo ralado",60,"g",L],["Azeite",30,"ml",M]],
+ ["Coza o bacalhau 5 minutos em água a ferver, escorra e desfaça em lascas.","Corte a batata em palitos e frite ou leve ao forno com azeite até ficar dourada.","Refogue a cebola em rodelas finas. Faça um molho com manteiga, farinha, leite e natas.","Misture o bacalhau, a batata e a cebola com o molho. Cubra com queijo e gratine 15 minutos a 200 ºC."]),
+r("arroz-frango","Arroz de frango","Massa e arroz",50,"🍗",false,[560,38,60,3,16,3],
+ [["Frango (coxas ou peito)",600,"g",T],["Arroz",300,"g",M],["Cebola",1,"un",H],["Cenoura",2,"un",H],["Tomate",2,"un",H],["Ervilhas congeladas",150,"g",C],["Alho (dentes)",3,"un",H],["Azeite",30,"ml",M]],
+ ["Refogue a cebola e o alho em azeite, junte o frango aos pedaços e deixe corar.","Adicione o tomate picado, a cenoura às rodelas e água a cobrir. Cozinhe 20 minutos.","Junte o arroz e as ervilhas com água quente (cerca de 2 vezes o volume do arroz).","Cozinhe 12 a 15 minutos, deixe repousar 5 minutos e sirva."]),
+r("caldo-verde","Caldo verde","Sopa",35,"🥬",false,[190,6,20,2,9,4],
+ [["Batata",500,"g",H],["Couve galega",200,"g",H],["Cebola",1,"un",H],["Alho (dentes)",2,"un",H],["Chouriço",80,"g",T],["Azeite",40,"ml",M]],
+ ["Cozinhe a batata com a cebola e o alho em água com sal até ficar macia.","Triture tudo e leve ao lume de novo.","Corte a couve em tiras finíssimas e junte à sopa. Cozinhe 5 minutos.","Sirva com rodelas de chouriço e um fio de azeite."]),
+r("sopa-legumes","Sopa de legumes","Sopa",30,"🥕",true,[120,4,18,5,4,5],
+ [["Batata",300,"g",H],["Cenoura",300,"g",H],["Curgete",1,"un",H],["Cebola",1,"un",H],["Couve",150,"g",H],["Azeite",30,"ml",M]],
+ ["Descasque e corte os legumes em pedaços.","Cozinhe em água com sal cerca de 25 minutos.","Triture e acerte o sal. Sirva com um fio de azeite."]),
+r("bolonhesa","Esparguete à bolonhesa","Massa e arroz",40,"🍝",false,[600,32,70,8,20,5],
+ [["Esparguete",320,"g",M],["Carne picada",400,"g",T],["Cebola",1,"un",H],["Cenoura",1,"un",H],["Alho (dentes)",2,"un",H],["Tomate triturado",400,"g",M],["Azeite",20,"ml",M]],
+ ["Refogue a cebola, o alho e a cenoura ralada em azeite.","Junte a carne picada e deixe alourar bem, desfazendo com a colher.","Adicione o tomate e cozinhe em lume brando 25 minutos.","Coza o esparguete, escorra e sirva com o molho."]),
+r("dourada-grelhada","Dourada grelhada com legumes","Peixe",30,"🐠",false,[410,35,32,3,16,5],
+ [["Dourada (limpa)",4,"un",P],["Batata",600,"g",H],["Brócolos",400,"g",H],["Limão",1,"un",H],["Azeite",40,"ml",M]],
+ ["Tempere a dourada com sal e limão. Cozinhe a batata e os brócolos em água com sal.","Grelhe a dourada 6 a 7 minutos de cada lado.","Sirva com azeite e fatias de limão."]),
+r("feijoada","Feijoada à portuguesa","Carne",100,"🍲",false,[700,38,60,5,32,14],
+ [["Feijão encarnado cozido",500,"g",M],["Entremeada",200,"g",T],["Chouriço",150,"g",T],["Couve",200,"g",H],["Cenoura",2,"un",H],["Cebola",1,"un",H],["Arroz",200,"g",M]],
+ ["Refogue a cebola com a entremeada e o chouriço em pedaços.","Junte a cenoura, o feijão e água. Cozinhe 40 minutos em lume brando.","Adicione a couve às tiras nos últimos 15 minutos.","Cozinhe o arroz à parte e sirva a acompanhar."]),
+r("omelete-espinafres","Omelete de espinafres","Vegetariano",20,"🍳",true,[290,19,6,3,21,3],
+ [["Ovos",8,"un",L],["Espinafres",300,"g",H],["Cebola",1,"un",H],["Queijo ralado",80,"g",L],["Tomate",2,"un",H],["Alface",1,"un",H],["Azeite",20,"ml",M]],
+ ["Refogue a cebola e os espinafres até murcharem.","Bata os ovos com sal e queijo, deite sobre os espinafres.","Cozinhe em lume brando até firmar, vire e acabe de cozer.","Sirva com salada de alface e tomate."]),
+r("lasanha-legumes","Lasanha de legumes","Vegetariano",60,"🧀",true,[480,22,52,9,20,6],
+ [["Massa de lasanha",250,"g",M],["Curgete",2,"un",H],["Cenoura",2,"un",H],["Cebola",1,"un",H],["Tomate triturado",400,"g",M],["Leite",500,"ml",L],["Farinha",40,"g",M],["Manteiga",40,"g",L],["Mozarela",200,"g",L]],
+ ["Refogue a cebola, a curgete e a cenoura ralada. Junte o tomate e cozinhe 15 minutos.","Faça o bechamel: derreta a manteiga, junte a farinha e depois o leite aos poucos.","Monte em camadas: massa, legumes, bechamel. Termine com mozarela.","Leve ao forno 30 minutos a 190 ºC."]),
+r("frango-forno","Frango assado com batatas","Carne",75,"🍗",false,[520,40,35,2,24,4],
+ [["Pernas de frango",1000,"g",T],["Batata",800,"g",H],["Cebola",1,"un",H],["Alho (dentes)",3,"un",H],["Vinho branco",100,"ml",M],["Azeite",40,"ml",M]],
+ ["Tempere o frango com sal, alho e vinho branco. Deixe marinar 30 minutos.","Disponha com as batatas e a cebola num tabuleiro. Regue com azeite.","Asse 50 a 60 minutos a 200 ºC, regando de vez em quando."]),
+r("peru-arroz","Bifes de peru com arroz e salada","Carne",25,"🥩",false,[480,40,50,2,12,3],
+ [["Bifes de peru",600,"g",T],["Arroz",300,"g",M],["Alface",1,"un",H],["Tomate",2,"un",H],["Limão",1,"un",H],["Azeite",20,"ml",M]],
+ ["Cozinhe o arroz em água com sal.","Tempere os bifes com sal e limão. Grelhe 3 a 4 minutos de cada lado.","Prepare a salada com alface e tomate. Sirva tudo junto."]),
+r("salmao-forno","Salmão no forno com batata-doce","Peixe",30,"🍣",false,[500,36,28,6,28,6],
+ [["Lombos de salmão",600,"g",P],["Batata-doce",500,"g",H],["Brócolos",300,"g",H],["Limão",1,"un",H],["Azeite",30,"ml",M]],
+ ["Corte a batata-doce em cubos e asse 15 minutos a 200 ºC com azeite.","Junte os brócolos e o salmão temperado com sal e limão.","Asse mais 12 a 15 minutos e sirva."]),
+r("pescada-cozida","Pescada cozida com legumes","Peixe",40,"🐟",false,[430,34,40,4,14,6],
+ [["Pescada",800,"g",P],["Batata",800,"g",H],["Feijão-verde",300,"g",H],["Cenoura",3,"un",H],["Ovos",4,"un",L],["Azeite",60,"ml",M]],
+ ["Cozinhe a batata, a cenoura, o feijão-verde e os ovos em água com sal.","Junte a pescada nos últimos 8 minutos.","Sirva com azeite e, se quiser, um fio de vinagre."]),
+r("hamburgueres","Hambúrgueres caseiros com batata assada","Carne",40,"🍔",false,[650,34,48,4,34,4],
+ [["Carne picada de vaca",600,"g",T],["Pão de hambúrguer",4,"un",B],["Batata",700,"g",H],["Alface",1,"un",H],["Tomate",2,"un",H],["Queijo fatiado",4,"un",L]],
+ ["Corte as batatas em gomos, tempere e asse 30 minutos a 210 ºC.","Tempere a carne e forme 4 hambúrgueres. Grelhe 4 minutos de cada lado.","Monte no pão com queijo, alface e tomate."]),
+r("massa-atum","Esparguete com atum e tomate","Massa e arroz",20,"🍝",false,[520,28,68,6,15,5],
+ [["Esparguete",320,"g",M],["Atum em lata",3,"un",M],["Tomate triturado",400,"g",M],["Cebola",1,"un",H],["Alho (dentes)",2,"un",H],["Azeite",20,"ml",M]],
+ ["Refogue a cebola e o alho. Junte o tomate e cozinhe 10 minutos.","Adicione o atum escorrido. Coza o esparguete.","Misture a massa com o molho e sirva."]),
+r("arroz-tomate-ovo","Arroz de tomate com ovo estrelado","Massa e arroz",30,"🍅",true,[480,17,66,4,16,3],
+ [["Arroz",300,"g",M],["Tomate",4,"un",H],["Cebola",1,"un",H],["Alho (dentes)",2,"un",H],["Ovos",4,"un",L],["Azeite",30,"ml",M]],
+ ["Refogue a cebola e o alho. Junte o tomate picado e cozinhe 8 minutos.","Adicione o arroz e água quente (2 vezes o volume). Cozinhe 12 minutos.","Estale os ovos em frigideira e sirva por cima."]),
+r("grao-espinafres","Grão com espinafres e ovo","Vegetariano",30,"🥗",true,[350,16,45,4,10,12],
+ [["Grão-de-bico cozido",600,"g",M],["Espinafres",400,"g",H],["Cebola",1,"un",H],["Alho (dentes)",2,"un",H],["Ovos",4,"un",L],["Azeite",20,"ml",M]],
+ ["Refogue a cebola e o alho. Junte o grão escorrido.","Adicione os espinafres e cozinhe até murcharem.","Sirva com ovo cozido às rodelas."]),
+r("porco-alentejana","Carne de porco à alentejana","Carne",50,"🐖",false,[680,42,40,3,38,3],
+ [["Carne de porco (pá)",600,"g",T],["Amêijoas",600,"g",P],["Batata",600,"g",H],["Alho (dentes)",4,"un",H],["Vinho branco",150,"ml",M],["Coentros (molho)",1,"un",H],["Azeite",30,"ml",M]],
+ ["Marine a carne em cubos com alho e vinho branco durante 1 hora.","Frite as batatas aos cubos. Alloure a carne em azeite.","Junte as amêijoas lavadas, tape e cozinhe até abrirem.","Misture as batatas e finalize com coentros."]),
+r("sardinhas","Sardinhas assadas com salada de pimentos","Peixe",30,"🐟",false,[450,34,18,6,26,4],
+ [["Sardinhas",12,"un",P],["Pimentos",3,"un",H],["Tomate",2,"un",H],["Cebola",1,"un",H],["Batata",500,"g",H],["Azeite",30,"ml",M]],
+ ["Asse os pimentos, descasque e corte em tiras. Misture com tomate e cebola.","Cozinhe as batatas.","Grelhe as sardinhas salgadas 4 a 5 minutos de cada lado e sirva."]),
+r("papas-aveia","Papas de aveia com fruta","Pequeno-almoço",10,"🥣",true,[320,12,50,16,8,6],
+ [["Flocos de aveia",200,"g",M],["Leite",800,"ml",L],["Banana",2,"un",H],["Maçã",2,"un",H]],
+ ["Aqueça o leite com a aveia, mexendo 5 minutos até engrossar.","Sirva com banana e maçã em pedaços."]),
+r("panquecas-banana","Panquecas de banana e aveia","Pequeno-almoço",15,"🥞",true,[290,12,40,12,9,4],
+ [["Banana",4,"un",H],["Ovos",4,"un",L],["Flocos de aveia",160,"g",M],["Leite",100,"ml",L]],
+ ["Triture a banana com os ovos, a aveia e o leite.","Cozinhe pequenas porções numa frigideira antiaderente, 2 minutos de cada lado."]),
+r("iogurte-fruta","Iogurte com fruta e nozes","Pequeno-almoço",5,"🍓",true,[220,10,26,18,9,3],
+ [["Iogurte natural",4,"un",L],["Fruta da época",400,"g",H],["Nozes",40,"g",M]],
+ ["Corte a fruta em pedaços.","Sirva sobre o iogurte com as nozes partidas."]),
+r("torradas-ovo","Torradas com abacate e ovo","Pequeno-almoço",10,"🍞",true,[340,15,32,3,17,5],
+ [["Pão integral (fatias)",8,"un",B],["Abacate",2,"un",H],["Ovos",4,"un",L]],
+ ["Torre o pão.","Esmague o abacate com uma pitada de sal e barre nas torradas.","Cubra com ovo cozido ou escalfado."]),
+r("arroz-doce","Arroz doce","Sobremesa",45,"🍚",true,[320,8,58,28,7,1],
+ [["Arroz",200,"g",M],["Leite",1000,"ml",L],["Açúcar",150,"g",M],["Ovos",3,"un",L],["Limão",1,"un",H]],
+ ["Cozinhe o arroz em água com casca de limão até absorver.","Junte o leite quente aos poucos, mexendo, e cozinhe 25 minutos.","Adicione o açúcar. Retire do lume e envolva as gemas batidas.","Sirva frio com canela."]),
+r("mousse-chocolate","Mousse de chocolate","Sobremesa",20,"🍫",true,[330,7,28,24,21,2],
+ [["Chocolate negro",200,"g",M],["Ovos",4,"un",L],["Açúcar",40,"g",M],["Natas",200,"ml",L]],
+ ["Derreta o chocolate em banho-maria e deixe arrefecer.","Misture as gemas e as natas batidas. Junte as claras em castelo com açúcar.","Leve ao frigorífico pelo menos 3 horas."]),
+r("salada-grao-atum","Salada de grão com atum","Peixe",15,"🥗",false,[380,24,35,4,16,10],
+ [["Grão-de-bico cozido",500,"g",M],["Atum em lata",2,"un",M],["Tomate",2,"un",H],["Pepino",1,"un",H],["Cebola",1,"un",H],["Azeite",30,"ml",M]],
+ ["Escorra o grão e o atum.","Corte os legumes e misture tudo com azeite, sal e vinagre."]),
+r("bifanas","Bifanas no pão","Carne",30,"🥪",false,[480,32,40,3,20,3],
+ [["Bifanas de porco",600,"g",T],["Pão (papo-seco)",4,"un",B],["Alho (dentes)",3,"un",H],["Vinho branco",100,"ml",M],["Azeite",20,"ml",M]],
+ ["Marine as bifanas com alho e vinho branco (30 minutos, ou de um dia para o outro).","Cozinhe numa frigideira com azeite e a marinada até ficarem macias.","Sirva em pão com o molho."]),
+r("tortilha-batata","Tortilha de batata","Vegetariano",35,"🥔",true,[380,15,32,2,22,3],
+ [["Ovos",6,"un",L],["Batata",600,"g",H],["Cebola",1,"un",H],["Azeite",80,"ml",M]],
+ ["Frite lentamente a batata e a cebola em azeite até ficarem macias.","Misture com os ovos batidos.","Cozinhe numa frigideira, vire com um prato e acabe de cozer."]),
+r("caril-frango","Caril de frango com arroz basmati","Carne",40,"🍛",false,[600,38,65,6,18,3],
+ [["Peito de frango",600,"g",T],["Arroz basmati",300,"g",M],["Leite de coco",400,"ml",M],["Cebola",1,"un",H],["Tomate triturado",200,"g",M],["Caril em pó",2,"c. sopa",M]],
+ ["Refogue a cebola e junte o caril. Adicione o frango em cubos.","Junte o tomate e o leite de coco. Cozinhe 20 minutos.","Sirva com arroz basmati cozido."]),
+r("sopa-abobora","Sopa de abóbora","Sopa",35,"🎃",true,[150,3,22,8,6,4],
+ [["Abóbora",800,"g",H],["Batata",200,"g",H],["Cebola",1,"un",H],["Azeite",30,"ml",M]],
+ ["Refogue a cebola. Junte a abóbora e a batata em cubos e água a cobrir.","Cozinhe 25 minutos, triture e acerte o sal."])
+];
+const NOTE=`Versão em português escrita por nós, inspirada no prato. Não é o texto da receita original.`;const J=(l,u)=>({a:`Jamie Oliver`,l,u,note:NOTE});const rj=(src,...args)=>Object.assign(r(...args),{src});const L30=`Jamie’s 30-Minute Meals`;const r30=(...a)=>rj(J(L30),...a);RECIPES.push(r30(`t-brocolos-massa`,`Massa de brócolos com presunto crocante`,`Massa e arroz`,25,`🥦`,false,[540,26,70,4,18,6],[[`Massa curta (penne)`,320,`g`,M],[`Brócolos`,500,`g`,H],[`Presunto fatiado`,80,`g`,T],[`Alho (dentes)`,2,`un`,H],[`Queijo ralado`,40,`g`,L],[`Azeite`,30,`ml`,M]],[`Coza a massa e, nos últimos 5 minutos, junte os brócolos à mesma água.`,`Frite o presunto até ficar crocante. Esmague metade dos brócolos com o alho e o azeite.`,`Misture tudo com a massa, o queijo e o presunto por cima.`]),r30(`t-couve-flor-macarrao`,`Macarrão gratinado com couve-flor`,`Vegetariano`,35,`🧀`,true,[520,22,62,8,20,5],[[`Massa curta (penne)`,320,`g`,M],[`Couve-flor`,1,`un`,H],[`Leite`,400,`ml`,L],[`Farinha`,30,`g`,M],[`Manteiga`,30,`g`,L],[`Queijo ralado`,100,`g`,L],[`Pão ralado`,30,`g`,M]],[`Coza a couve-flor em ramos e a massa em água com sal.`,`Faça um bechamel com manteiga, farinha e leite e derreta dentro 70 g de queijo.`,`Misture tudo, cubra com pão ralado e o resto do queijo e gratine 10 minutos.`]),r30(`t-rigatoni-tomate`,`Massa com pesto de tomate e amêndoa`,`Massa e arroz`,20,`🍅`,true,[560,19,72,6,22,6],[[`Massa curta (penne)`,320,`g`,M],[`Tomate cherry`,300,`g`,H],[`Amêndoas`,60,`g`,M],[`Manjericão (molho)`,1,`un`,H],[`Alho (dentes)`,1,`un`,H],[`Queijo ralado`,40,`g`,L],[`Azeite`,40,`ml`,M]],[`Triture os tomates, as amêndoas, o manjericão, o alho, o queijo e o azeite até ficar um molho grosso.`,`Coza a massa e misture com o molho, juntando um pouco da água da cozedura.`]),r30(`t-lasanha-verao`,`Lasanha de legumes de verão com requeijão`,`Vegetariano`,50,`🥒`,true,[470,21,50,9,20,5],[[`Massa de lasanha`,250,`g`,M],[`Curgete`,2,`un`,H],[`Pimentos`,2,`un`,H],[`Tomate triturado`,400,`g`,M],[`Requeijão`,250,`g`,L],[`Mozarela`,150,`g`,L],[`Cebola`,1,`un`,H],[`Azeite`,20,`ml`,M]],[`Salteie a cebola, a curgete e os pimentos em cubos e junte o tomate.`,`Monte em camadas: massa, legumes, requeijão em colheradas.`,`Cubra com mozarela e leve ao forno 30 minutos a 190 ºC.`]),r30(`t-puttanesca`,`Esparguete à puttanesca`,`Massa e arroz`,20,`🍝`,false,[510,17,74,7,15,5],[[`Esparguete`,320,`g`,M],[`Tomate triturado`,400,`g`,M],[`Azeitonas pretas`,100,`g`,M],[`Alcaparras`,2,`c. sopa`,M],[`Anchovas em lata`,1,`un`,M],[`Alho (dentes)`,2,`un`,H],[`Azeite`,20,`ml`,M]],[`Derreta as anchovas em azeite com o alho.`,`Junte o tomate, as azeitonas e as alcaparras e cozinhe 10 minutos.`,`Misture com o esparguete cozido.`]),r30(`t-risotto-cogumelos`,`Risotto cremoso de cogumelos`,`Massa e arroz`,40,`🍄`,true,[490,13,70,3,16,3],[[`Arroz arbóreo`,300,`g`,M],[`Cogumelos`,400,`g`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Vinho branco`,100,`ml`,M],[`Caldo de legumes`,1000,`ml`,M],[`Queijo ralado`,60,`g`,L],[`Manteiga`,30,`g`,L]],[`Salteie os cogumelos em lume forte e reserve.`,`Refogue a cebola e o alho, junte o arroz e o vinho. Vá juntando o caldo quente aos poucos, mexendo, durante 18 minutos.`,`Envolva os cogumelos, a manteiga e o queijo e deixe repousar 2 minutos.`]),r30(`t-tarte-espinafres`,`Tarte de espinafres e feta em massa filo`,`Vegetariano`,40,`🥧`,true,[400,16,35,3,22,4],[[`Massa filo (folhas)`,8,`un`,M],[`Espinafres`,400,`g`,H],[`Queijo feta`,200,`g`,L],[`Ovos`,2,`un`,L],[`Cebola`,1,`un`,H],[`Azeite`,40,`ml`,M]],[`Refogue a cebola e os espinafres, escorra bem e misture com o feta e os ovos.`,`Forre uma forma com folhas de filo pinceladas com azeite, deite o recheio e cubra com mais folhas.`,`Asse 25 minutos a 190 ºC até dourar.`]),r30(`t-sopa-tomate`,`Sopa de tomate com croutons`,`Sopa`,30,`🍅`,true,[140,4,22,10,5,4],[[`Tomate`,8,`un`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Batata`,150,`g`,H],[`Manjericão (molho)`,1,`un`,H],[`Pão rústico (fatias)`,4,`un`,B],[`Azeite`,30,`ml`,M]],[`Refogue a cebola e o alho, junte os tomates aos pedaços, a batata e água a cobrir. Cozinhe 20 minutos.`,`Triture com o manjericão.`,`Sirva com cubos de pão torrados em azeite.`]),r30(`t-borrego-caril`,`Caril de borrego`,`Carne`,45,`🍛`,false,[480,38,22,7,26,4],[[`Borrego (pá, em cubos)`,700,`g`,T],[`Cebola`,2,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Tomate triturado`,400,`g`,M],[`Caril em pó`,2,`c. sopa`,M],[`Iogurte natural`,2,`un`,L],[`Arroz basmati`,280,`g`,M]],[`Alloure o borrego e reserve. Refogue a cebola e o alho com o caril.`,`Volte a juntar o borrego com o tomate e meio copo de água. Cozinhe tapado 35 minutos.`,`Misture o iogurte no fim e sirva com arroz basmati.`]),r30(`t-caril-verde`,`Caril verde de frango`,`Carne`,30,`🍲`,false,[520,36,45,6,22,3],[[`Peito de frango`,600,`g`,T],[`Leite de coco`,400,`ml`,M],[`Pasta de caril verde`,3,`c. sopa`,M],[`Feijão-verde`,200,`g`,H],[`Cebola`,1,`un`,H],[`Arroz basmati`,280,`g`,M]],[`Frite a pasta de caril com a cebola e junte o frango em tiras.`,`Adicione o leite de coco e o feijão-verde e cozinhe 12 minutos.`,`Sirva com arroz.`]),r30(`t-empadao-frango`,`Empadão de frango`,`Carne`,55,`🥧`,false,[610,34,52,5,30,4],[[`Peito de frango`,500,`g`,T],[`Massa folhada (rolo)`,2,`un`,B],[`Cebola`,1,`un`,H],[`Cenoura`,2,`un`,H],[`Ervilhas congeladas`,150,`g`,C],[`Natas`,200,`ml`,L],[`Ovos`,1,`un`,L]],[`Cozinhe o frango com a cebola e a cenoura em cubos, junte as ervilhas e as natas.`,`Forre uma forma com uma massa, deite o recheio e cubra com a outra.`,`Pincele com ovo e asse 25 minutos a 200 ºC.`]),r30(`t-frango-mostarda`,`Frango à mostarda`,`Carne`,30,`🍗`,false,[430,40,12,4,24,2],[[`Peito de frango`,600,`g`,T],[`Mostarda`,2,`c. sopa`,M],[`Natas`,200,`ml`,L],[`Cebola`,1,`un`,H],[`Vinho branco`,80,`ml`,M],[`Azeite`,20,`ml`,M]],[`Grelhe os bifes de frango e reserve.`,`Refogue a cebola, junte o vinho, a mostarda e as natas.`,`Volte a pôr o frango no molho 3 minutos.`]),r30(`t-frango-tabuleiro`,`Frango de tabuleiro com batata esmagada e espinafres`,`Carne`,45,`🍗`,false,[540,40,38,3,26,5],[[`Pernas de frango`,1000,`g`,T],[`Batata`,700,`g`,H],[`Espinafres`,400,`g`,H],[`Natas`,100,`ml`,L],[`Alho (dentes)`,2,`un`,H],[`Azeite`,30,`ml`,M]],[`Asse o frango temperado 35 minutos a 200 ºC.`,`Cozinhe a batata, esmague com um fio de azeite.`,`Salteie os espinafres com alho e natas e sirva tudo junto.`]),r30(`t-frango-jerk`,`Frango jerk com arroz e feijão`,`Carne`,35,`🌶️`,false,[610,41,70,5,15,10],[[`Pernas de frango`,1000,`g`,T],[`Tempero jerk (ou mistura picante)`,2,`c. sopa`,M],[`Lima`,1,`un`,H],[`Arroz`,280,`g`,M],[`Feijão encarnado cozido`,400,`g`,M],[`Tomate`,2,`un`,H],[`Cebola`,1,`un`,H]],[`Esfregue o frango com o tempero e sumo de lima e asse 30 minutos a 210 ºC.`,`Cozinhe o arroz com o feijão escorrido.`,`Sirva com salada de tomate e cebola.`]),r30(`t-espetadas-satay`,`Espetadas de frango com molho satay`,`Carne`,30,`🍢`,false,[490,42,18,6,28,4],[[`Peito de frango`,600,`g`,T],[`Manteiga de amendoim`,4,`c. sopa`,M],[`Molho de soja`,2,`c. sopa`,M],[`Leite de coco`,200,`ml`,M],[`Lima`,1,`un`,H],[`Pepino`,1,`un`,H],[`Cenoura`,2,`un`,H]],[`Corte o frango em cubos, espete e grelhe 10 minutos.`,`Aqueça a manteiga de amendoim com o soja, o leite de coco e a lima.`,`Sirva com salada de pepino e cenoura raladas.`]),r30(`t-frango-halloumi`,`Frango recheado com halloumi`,`Carne`,35,`🍗`,false,[500,45,10,3,30,2],[[`Peito de frango`,600,`g`,T],[`Queijo halloumi`,200,`g`,L],[`Tomate`,2,`un`,H],[`Espargos`,300,`g`,H],[`Azeite`,20,`ml`,M]],[`Abra uma bolsa em cada peito e recheie com halloumi e tomate.`,`Doure numa frigideira e termine 15 minutos no forno a 200 ºC.`,`Sirva com espargos salteados.`]),r30(`t-frango-piri-piri`,`Frango piri-piri com batata`,`Carne`,45,`🌶️`,false,[520,42,36,2,24,4],[[`Pernas de frango`,1000,`g`,T],[`Molho piri-piri`,3,`c. sopa`,M],[`Alho (dentes)`,4,`un`,H],[`Limão`,1,`un`,H],[`Batata`,700,`g`,H],[`Rúcula`,100,`g`,H],[`Azeite`,40,`ml`,M]],[`Marine o frango com piri-piri, alho, limão e azeite.`,`Asse com as batatas aos gomos 40 minutos a 200 ºC.`,`Sirva com rúcula.`]),r30(`t-camarao-caril`,`Caril tailandês de camarão`,`Peixe`,25,`🍤`,false,[470,28,50,6,17,3],[[`Camarão`,500,`g`,P],[`Leite de coco`,400,`ml`,M],[`Pasta de caril vermelho`,3,`c. sopa`,M],[`Pimentos`,2,`un`,H],[`Arroz basmati`,280,`g`,M],[`Lima`,1,`un`,H]],[`Frite a pasta de caril, junte os pimentos em tiras e o leite de coco.`,`Cozinhe 6 minutos, junte o camarão e cozinhe até ficar rosado.`,`Sirva com arroz e lima.`]),r30(`t-sardinhas-agriao`,`Sardinhas grelhadas com salada de agrião e figos`,`Peixe`,25,`🐟`,false,[430,32,22,14,24,4],[[`Sardinhas`,12,`un`,P],[`Agrião`,100,`g`,H],[`Figos`,4,`un`,H],[`Batata`,500,`g`,H],[`Azeite`,30,`ml`,M],[`Limão`,1,`un`,H]],[`Cozinhe as batatas.`,`Grelhe as sardinhas salgadas 4 minutos de cada lado.`,`Misture o agrião com os figos aos quartos, azeite e limão.`]),r30(`t-bacalhau-crosta`,`Bacalhau com crosta de ervas e puré de ervilhas`,`Peixe`,35,`🐟`,false,[450,40,38,4,15,7],[[`Bacalhau demolhado`,700,`g`,P],[`Pão ralado`,60,`g`,M],[`Salsa (molho)`,1,`un`,H],[`Limão`,1,`un`,H],[`Ervilhas congeladas`,400,`g`,C],[`Hortelã (molho)`,1,`un`,H],[`Azeite`,30,`ml`,M]],[`Misture o pão ralado com salsa, raspa de limão e azeite.`,`Cubra as postas de bacalhau e asse 15 minutos a 200 ºC.`,`Coza as ervilhas e triture com hortelã e azeite para o puré.`]),r30(`t-bolinhos-peixe`,`Bolinhos de peixe com salada`,`Peixe`,40,`🐟`,false,[470,30,48,3,17,5],[[`Pescada`,500,`g`,P],[`Batata`,600,`g`,H],[`Ovos`,1,`un`,L],[`Salsa (molho)`,1,`un`,H],[`Farinha`,40,`g`,M],[`Alface`,1,`un`,H],[`Tomate`,2,`un`,H],[`Azeite`,40,`ml`,M]],[`Cozinhe a pescada e a batata, esmague e misture com ovo e salsa.`,`Forme bolinhos, passe por farinha e frite em azeite até dourar.`,`Sirva com salada de alface e tomate.`]),r30(`t-tagine-peixe`,`Tagine de peixe com cuscuz`,`Peixe`,35,`🍲`,false,[480,36,55,8,12,6],[[`Pescada`,700,`g`,P],[`Cuscuz`,280,`g`,M],[`Tomate triturado`,400,`g`,M],[`Cebola`,1,`un`,H],[`Grão-de-bico cozido`,300,`g`,M],[`Alho (dentes)`,2,`un`,H],[`Laranja`,1,`un`,H],[`Azeite`,20,`ml`,M]],[`Refogue a cebola e o alho com cominho e paprica, junte o tomate e o grão.`,`Adicione a pescada em pedaços e cozinhe 10 minutos.`,`Hidrate o cuscuz com água a ferver e sirva com laranja às rodelas.`]),r30(`t-peixe-tabuleiro`,`Peixe de tabuleiro com batata e molho verde`,`Peixe`,35,`🐟`,false,[440,36,40,3,16,5],[[`Filetes de pescada`,700,`g`,P],[`Batata`,700,`g`,H],[`Tomate`,3,`un`,H],[`Salsa (molho)`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Espinafres`,300,`g`,H],[`Azeite`,40,`ml`,M]],[`Asse as batatas em rodelas finas 15 minutos a 200 ºC.`,`Junte o peixe e os tomates e asse mais 12 minutos.`,`Triture a salsa com alho e azeite e regue por cima. Sirva com espinafres.`]),r30(`t-robalo-bacon`,`Robalo com bacon crocante e puré de batata-doce`,`Peixe`,30,`🐟`,false,[470,38,38,9,18,5],[[`Filetes de robalo`,600,`g`,P],[`Bacon fatiado`,100,`g`,T],[`Batata-doce`,600,`g`,H],[`Brócolos`,300,`g`,H],[`Molho de soja`,1,`c. sopa`,M]],[`Cozinhe a batata-doce e esmague.`,`Frite o bacon até ficar crocante e grelhe o robalo pelo lado da pele.`,`Sirva com brócolos cozidos regados com soja.`]),r30(`t-salmao-asiatico`,`Salmão estilo asiático com noodles`,`Peixe`,25,`🍣`,false,[520,35,45,6,22,3],[[`Lombos de salmão`,600,`g`,P],[`Noodles`,250,`g`,M],[`Molho de soja`,3,`c. sopa`,M],[`Mel`,1,`c. sopa`,M],[`Couve chinesa`,300,`g`,H],[`Cenoura`,2,`un`,H],[`Limão`,1,`un`,H]],[`Pincele o salmão com soja e mel e grelhe 8 minutos.`,`Coza os noodles e salteie a couve e a cenoura em tiras.`,`Junte tudo com sumo de limão.`]),r30(`t-bife-salteado`,`Bife salteado com noodles`,`Carne`,25,`🥩`,false,[510,36,48,5,19,3],[[`Bife do lombo`,500,`g`,T],[`Noodles`,250,`g`,M],[`Pimentos`,2,`un`,H],[`Cebola`,1,`un`,H],[`Molho de soja`,3,`c. sopa`,M],[`Alho (dentes)`,2,`un`,H],[`Azeite`,20,`ml`,M]],[`Corte o bife em tiras e salteie em lume forte 2 minutos. Reserve.`,`Salteie a cebola, os pimentos e o alho e junte os noodles cozidos.`,`Volte a juntar a carne com o soja.`]),r30(`t-hash-vaca`,`Hash de carne com batata e ovo`,`Carne`,25,`🍳`,false,[560,36,40,4,28,5],[[`Carne picada`,500,`g`,T],[`Batata`,600,`g`,H],[`Cebola`,1,`un`,H],[`Pimentos`,1,`un`,H],[`Ovos`,4,`un`,L],[`Azeite`,30,`ml`,M]],[`Cozinhe a batata em cubos pequenos 6 minutos e escorra.`,`Frite a carne com a cebola e o pimento, junte a batata e deixe tostar.`,`Sirva com um ovo estrelado por cima.`]),r30(`t-sandes-almondegas`,`Sanduíche de almôndegas`,`Carne`,35,`🥪`,false,[620,34,62,8,25,4],[[`Carne picada`,500,`g`,T],[`Pão (papo-seco)`,4,`un`,B],[`Tomate triturado`,300,`g`,M],[`Ovos`,1,`un`,L],[`Pão ralado`,40,`g`,M],[`Mozarela`,100,`g`,L],[`Cebola`,1,`un`,H],[`Alho (dentes)`,1,`un`,H]],[`Misture a carne com ovo, pão ralado e sal e forme almôndegas pequenas. Doure em azeite.`,`Junte a cebola, o alho e o tomate e cozinhe 12 minutos.`,`Encha os pães com as almôndegas e mozarela e gratine 3 minutos.`]),r30(`t-costeletas-porco`,`Costeletas de porco com batata esmagada e couve`,`Carne`,35,`🐖`,false,[580,40,38,3,29,5],[[`Costeletas de porco`,800,`g`,T],[`Batata`,700,`g`,H],[`Couve`,300,`g`,H],[`Alho (dentes)`,2,`un`,H],[`Azeite`,20,`ml`,M]],[`Tempere as costeletas e grelhe 6 a 7 minutos de cada lado.`,`Cozinhe a batata, esmague com azeite. Salteie a couve em tiras com alho.`,`Sirva tudo junto.`]),r30(`t-cassoulet`,`Cassoulet rápido de salsichas`,`Carne`,40,`🍲`,false,[610,28,50,8,32,12],[[`Salsichas frescas`,8,`un`,T],[`Feijão branco cozido`,500,`g`,M],[`Tomate triturado`,400,`g`,M],[`Cebola`,1,`un`,H],[`Cenoura`,2,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Brócolos`,300,`g`,H]],[`Doure as salsichas e reserve. Refogue a cebola, a cenoura e o alho.`,`Junte o tomate, o feijão e as salsichas e cozinhe 20 minutos.`,`Sirva com brócolos cozidos.`]));const PD=u=>({a:`Pingo Doce`,l:`Pratos portugueses`,u:`https://www.pingodoce.pt/receitas/`+u+`/`,note:NOTE});const rp=(u,...a)=>rj(PD(u),...a);RECIPES.push(rp(`migas-de-broa-com-espargos`,`p-migas-espargos`,`Migas de broa com espargos`,`Carne`,30,`🥖`,false,[208,7.7,27,3.4,6.5,5.6], [[`Broa de milho`,170,`g`,B],[`Espargos`,170,`g`,H],[`Barriga de porco fumada`,30,`g`,T],[`Feijão-frade cozido`,280,`g`,M],[`Alho (dentes)`,3,`un`,H],[`Azeite`,30,`ml`,M]], [`Escalde os espargos aos pedaços em água com sal e escorra bem.`,`Desfaça a broa grosseiramente, com a côdea. Doure a barriga fumada em cubinhos com o alho picado e o azeite.`,`Junte os espargos e o feijão-frade, depois a broa; mexa até aquecer tudo e acerte os temperos. Sirva de imediato. Para uma versão vegetariana, omita a barriga.`]),rp(`migas-de-grelos-com-bacalhau-e-feijao-frade`,`p-migas-grelos-bacalhau`,`Migas de grelos com bacalhau e feijão-frade`,`Peixe`,40,`🥬`,false,[530,34,50,3,20,12], [[`Broa de milho`,300,`g`,B],[`Grelos`,400,`g`,H],[`Bacalhau demolhado`,400,`g`,P],[`Feijão-frade cozido`,400,`g`,M],[`Cebola`,1,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Azeitonas pretas`,60,`g`,M],[`Azeite`,50,`ml`,M]], [`Coza os grelos cerca de 12 minutos, escorra e pique. Coza o bacalhau, lasque-o e guarde um pouco da água.`,`Refogue a cebola e o alho em lume brando, junte grelos, bacalhau e feijão.`,`Esfarele o miolo da broa por cima com um pouco da água do bacalhau e cozinhe 10 minutos.`,`Acerte os temperos e termine com azeitonas.`]),rp(`chanfana`,`p-chanfana`,`Chanfana`,`Carne`,300,`🍖`,false,[560,45,10,2,36,2], [[`Cabra ou borrego (pedaços)`,1000,`g`,T],[`Vinho tinto`,500,`ml`,M],[`Alho (dentes)`,6,`un`,H],[`Cebola`,2,`un`,H],[`Aguardente`,50,`ml`,M],[`Alecrim (molho)`,1,`un`,H],[`Azeite`,40,`ml`,M],[`Batata`,800,`g`,H],[`Salsa (molho)`,1,`un`,H]], [`Marine a carne pelo menos 24 horas em vinho tinto, alho e sal.`,`Num tacho de barro, aloure a cebola em azeite e junte a carne, a marinada, cravinho, louro e alecrim. Leve a ferver e, a meio, junte a aguardente.`,`Tape bem e leve ao forno a 120 ºC cerca de 4 horas.`,`Sirva com batata cozida e salsa.`]),rp(`rancho-a-moda-de-viseu`,`p-rancho-viseu`,`Rancho à moda de Viseu`,`Carne`,120,`🍲`,false,[690,42,62,4,28,12], [[`Grão-de-bico (demolhar de véspera)`,300,`g`,M],[`Vitela`,300,`g`,T],[`Entrecosto`,300,`g`,T],[`Toucinho`,80,`g`,T],[`Chouriço`,100,`g`,T],[`Frango (coxas)`,400,`g`,T],[`Batata`,300,`g`,H],[`Cenoura`,2,`un`,H],[`Couve`,200,`g`,H],[`Massa cotovelos`,150,`g`,M]], [`Coza o grão com a vitela; quando amolecer, junte toucinho, chouriço, entrecosto e frango e cozinhe cerca de 1 hora.`,`Retire as carnes cozidas e cozinhe no caldo a batata, a cenoura e a couve.`,`Junte a massa 10 minutos depois, devolva as carnes cortadas e sirva com cominhos.`]),rp(`choquinhos-a-algarvia`,`p-choquinhos`,`Choquinhos à algarvia`,`Peixe`,40,`🦑`,false,[400,34,32,5,16,5], [[`Choquinhos`,800,`g`,P],[`Batata`,600,`g`,H],[`Pimentos`,2,`un`,H],[`Curgete`,1,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Coentros (molho)`,1,`un`,H],[`Limão`,1,`un`,H],[`Azeite`,60,`ml`,M]], [`Cozinhe as batatas picadas e esborrache-as ligeiramente. Salteie os legumes grelhados em azeite cerca de 15 minutos.`,`Seque bem os choquinhos, faça golpes em losangos e grelhe em chapa muito quente, pincelando com azeite e alho.`,`Misture coentros, limão e azeite e regue. Sirva com os legumes e as batatas.`]),rp(`queijada-de-requeijao`,`p-queijadas`,`Queijadas de requeijão`,`Sobremesa`,70,`🧁`,true,[260,8,30,17,12,1], [[`Farinha`,200,`g`,M],[`Banha`,60,`g`,M],[`Requeijão`,400,`g`,L],[`Ovos`,4,`un`,L],[`Açúcar`,200,`g`,M],[`Manteiga`,50,`g`,L],[`Laranja`,1,`un`,H]], [`Amasse a farinha com a banha, sal e água quente e deixe repousar.`,`Misture requeijão, gemas, açúcar, manteiga derretida e raspa de laranja; junte as claras em castelo e um pouco de farinha.`,`Forre formas com a massa, recheie e decore com tiras. Asse a 250 ºC até dourar.`]),rp(`acorda-alentejana`,`p-acorda-alentejana`,`Açorda alentejana`,`Sopa`,20,`🥣`,true,[330,12,45,2,11,3], [[`Pão alentejano (duro)`,400,`g`,B],[`Alho (dentes)`,4,`un`,H],[`Coentros (molho)`,2,`un`,H],[`Ovos`,4,`un`,L],[`Azeite`,60,`ml`,M]], [`Pise os coentros com o alho e sal até virar pasta; deite no tacho com o azeite e água a ferver.`,`Escalde os ovos em água quase a fremir.`,`Coloque o pão nos pratos, regue com o caldo de coentros e sirva com o ovo por cima.`]),rp(`acorda-com-coentros-e-ovo`,`p-acorda-coentros-ovo`,`Açorda de coentros com tomate e gema`,`Sopa`,25,`🥣`,true,[330,12,42,4,13,3], [[`Pão alentejano (duro)`,300,`g`,B],[`Alho (dentes)`,3,`un`,H],[`Tomate`,2,`un`,H],[`Coentros (molho)`,1,`un`,H],[`Ovos`,4,`un`,L],[`Azeite`,40,`ml`,M]], [`Desfaça o pão em água quente e deixe embeber; esprema o excesso.`,`Doure o alho esmagado em azeite, junte o tomate sem sementes em cubos e cozinhe 5 minutos.`,`Misture o pão e mexa ao lume até ficar com a textura desejada. Junte os coentros.`,`Faça uma cova em cada taça e coloque uma gema, misturando logo ao servir.`]),rp(`cozido-a-portuguesa-transmontano`,`p-cozido-transmontano`,`Cozido à portuguesa transmontano`,`Carne`,150,`🍲`,false,[760,52,50,4,38,10], [[`Espinhaço de porco`,400,`g`,T],[`Entrecosto`,400,`g`,T],[`Frango (coxas)`,400,`g`,T],[`Chouriço`,200,`g`,T],[`Batata`,600,`g`,H],[`Cenoura`,3,`un`,H],[`Couve`,400,`g`,H],[`Arroz`,250,`g`,M],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Azeite`,30,`ml`,M]], [`Tempere as carnes de véspera. Coza o espinhaço, o entrecosto e o frango, retirando cada um quando estiver tenro (a panela de pressão acelera).`,`Cozinhe no mesmo caldo os legumes. Coza os chouriços picados com um garfo cerca de 7 minutos.`,`Faça o arroz de forno: refogue cebola e alho, frite o arroz e regue com caldo (o dobro do volume). Leve ao forno até secar.`,`Sirva as carnes e os legumes em travessas, com o arroz.`]),rp(`alheira-no-forno`,`p-alheira-forno`,`Alheira no forno com ovo`,`Carne`,25,`🥖`,false,[470,22,30,2,28,3], [[`Alheiras`,4,`un`,T],[`Ovos`,4,`un`,L],[`Batata`,500,`g`,H],[`Grelos`,300,`g`,H],[`Azeite`,20,`ml`,M]], [`Faça um corte à volta de cada alheira e asse a 180 ºC cerca de 15 minutos.`,`Estrele os ovos em azeite, com a gema mole.`,`Retire a pele das alheiras e sirva com o ovo, batata cozida e grelos.`]),rp(`tripas-a-moda-do-porto`,`p-tripas-porto`,`Tripas à moda do Porto`,`Carne`,120,`🍲`,false,[600,40,45,4,28,12], [[`Dobrada`,500,`g`,T],[`Mão de vitela`,400,`g`,T],[`Entremeada`,200,`g`,T],[`Frango (coxas)`,300,`g`,T],[`Chouriço`,100,`g`,T],[`Farinheira`,1,`un`,T],[`Feijão branco cozido`,400,`g`,M],[`Cenoura`,2,`un`,H],[`Cebola`,2,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Vinho branco`,100,`ml`,M],[`Limão`,1,`un`,H],[`Arroz`,250,`g`,M],[`Salsa (molho)`,1,`un`,H]], [`Esfregue a dobrada com sal e limão e lave bem. Coza a mão de vitela e depois a entremeada com o frango, cerca de 30 minutos.`,`Refogue cebola, alho e louro, junte a cenoura, colorau, as carnes em pedaços, os enchidos e o vinho.`,`Junte o feijão e apure 15 minutos. Sirva com salsa e arroz branco.`]),rp(`bola-de-lamego`,`p-bola-lamego`,`Bola de Lamego`,`Carne`,200,`🥖`,false,[610,28,72,3,22,3], [[`Farinha de trigo`,700,`g`,M],[`Fermento de padeiro (sachê)`,1,`un`,M],[`Ovos`,3,`un`,L],[`Banha`,50,`g`,M],[`Azeite`,50,`ml`,M],[`Peito de frango`,300,`g`,T],[`Chouriço`,150,`g`,T],[`Presunto fatiado`,100,`g`,T]], [`Faça a massa com a farinha, fermento dissolvido em água tépida, ovos, gorduras e sal. Amasse até desprender e deixe levedar cerca de 2 horas.`,`Cozinhe e desfie o frango e corte os enchidos em cubos.`,`Forre um tabuleiro com a maior parte da massa, intercale recheio e camadas de massa e feche bem.`,`Deixe levedar de novo, pincele com gema e asse a 200 ºC cerca de 45 minutos.`]),rp(`acorda-de-tomate-com-carapaus`,`p-acorda-tomate-carapau`,`Açorda de tomate com carapaus fritos`,`Peixe`,45,`🐟`,false,[520,30,48,6,22,4], [[`Pão alentejano (duro)`,300,`g`,B],[`Carapaus`,8,`un`,P],[`Farinha`,40,`g`,M],[`Óleo de fritar`,300,`ml`,M],[`Tomate`,6,`un`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Azeitonas pretas`,60,`g`,M],[`Coentros (molho)`,1,`un`,H],[`Limão`,1,`un`,H],[`Azeite`,40,`ml`,M]], [`Embeba o pão em pedaços com água a ferver. Refogue alho, cebola e louro, junte o tomate e cozinhe 5 a 6 minutos.`,`Junte o pão e mexa até ficar na consistência desejada; termine com azeitonas e coentros.`,`Tempere os carapaus, passe por farinha e frite até dourar.`,`Sirva com limão e uma salada de tomate.`]),rp(`pasteis-de-chaves`,`p-pasteis-chaves`,`Pastéis de Chaves`,`Carne`,60,`🥧`,false,[400,15,32,2,24,1], [[`Massa folhada (rolo)`,2,`un`,B],[`Carne picada`,400,`g`,T],[`Chouriço`,80,`g`,T],[`Cebola`,2,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Tomate`,2,`un`,H],[`Vinho branco`,80,`ml`,M],[`Salsa (molho)`,1,`un`,H],[`Azeite`,20,`ml`,M]], [`Refogue cebola e alho, junte salsa, tomate e vinho e cozinhe tapado 10 minutos. Adicione a carne e o chouriço e cozinhe mais 20 minutos; deixe arrefecer.`,`Enrole a massa folhada, corte rolinhos e estique-os em discos.`,`Recheie, feche em meias-luas e asse a 250 ºC cerca de 15 a 20 minutos.`]),rp(`ameijoas-na-cataplana-a-algarvia`,`p-ameijoas-cataplana`,`Amêijoas na cataplana à algarvia`,`Peixe`,30,`🐚`,false,[330,28,12,4,17,2], [[`Amêijoas`,1000,`g`,P],[`Chouriço`,100,`g`,T],[`Bacon`,80,`g`,T],[`Tomate`,3,`un`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Salsa (molho)`,1,`un`,H],[`Pão rústico (fatias)`,4,`un`,B],[`Azeite`,30,`ml`,M]], [`Ponha as amêijoas de molho em água com sal e lave-as.`,`Na cataplana, cubra as amêijoas com chouriço, bacon, cebola, alho e tomate sem sementes. Junte colorau, pimenta, salsa com louro e azeite.`,`Feche e cozinhe em lume brando 20 a 25 minutos, agitando. Sirva com pão fatiado fino.`]),rp(`tigeladas-de-abobora-com-nozes`,`p-tigeladas-abobora`,`Tigeladas de abóbora com nozes`,`Sobremesa`,90,`🎃`,true,[270,8,36,24,11,2], [[`Abóbora`,400,`g`,H],[`Ovos`,4,`un`,L],[`Leite`,400,`ml`,L],[`Amido de milho`,20,`g`,M],[`Mel`,80,`g`,M],[`Laranja`,1,`un`,H],[`Nozes`,40,`g`,M]], [`Cozinhe a abóbora em cubos com canela em pau e casca de laranja cerca de 25 minutos; triture em puré.`,`Bata ovos, mel e amido dissolvido em leite frio e junte o leite quente em fio, depois o puré.`,`Distribua por tigelas untadas e quentes e asse a 180 ºC cerca de 50 minutos.`,`Cubra com nozes tostadas e envolvidas em mel.`]),rp(`salsichas-com-couve-lombarda`,`p-salsichas-lombarda`,`Salsichas com couve-lombarda`,`Carne`,60,`🌭`,false,[610,24,52,6,32,7], [[`Salsichas frescas`,8,`un`,T],[`Couve lombarda`,1,`un`,H],[`Bacon`,80,`g`,T],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Aipo (talo)`,2,`un`,H],[`Cenoura`,2,`un`,H],[`Tomate`,2,`un`,H],[`Tomate triturado`,200,`g`,M],[`Arroz basmati`,280,`g`,M]], [`Escalde as folhas maiores da couve e corte o resto em juliana. Doure as salsichas e reserve.`,`Refogue bacon, cebola, alho e aipo, junte cenoura, tomate, louro e tomilho.`,`Enrole cada salsicha numa folha de couve, junte ao tacho com a juliana e o tomate triturado e cozinhe tapado cerca de 30 minutos.`,`Sirva com arroz basmati.`]),rp(`cozido-de-grao`,`p-cozido-grao`,`Cozido de grão`,`Carne`,120,`🥬`,false,[620,34,62,6,26,15], [[`Grão-de-bico (demolhar de véspera)`,300,`g`,M],[`Borrego`,400,`g`,T],[`Entremeada`,150,`g`,T],[`Chouriço`,100,`g`,T],[`Farinheira`,1,`un`,T],[`Feijão-verde`,200,`g`,H],[`Batata`,400,`g`,H],[`Abóbora`,300,`g`,H],[`Cebola`,1,`un`,H],[`Hortelã (molho)`,1,`un`,H],[`Pão rústico (fatias)`,4,`un`,B],[`Azeite`,20,`ml`,M]], [`Coza o grão demolhado com cebola e azeite cerca de 1 hora.`,`Noutra panela, cozinhe borrego, entremeada, chouriço e farinheira com hortelã cerca de 45 minutos. Retire as carnes e cozinhe no caldo feijão-verde, batata e abóbora.`,`Sirva o grão com as carnes e os legumes, e o caldo sobre fatias de pão com folhas de hortelã.`]),rp(`dobrada`,`p-dobrada`,`Dobrada com feijão branco`,`Carne`,150,`🍲`,false,[570,36,42,3,27,11], [[`Tripas`,600,`g`,T],[`Feijão branco (demolhar de véspera)`,300,`g`,M],[`Bacon`,80,`g`,T],[`Frango (coxas)`,400,`g`,T],[`Cenoura`,2,`un`,H],[`Chouriço`,100,`g`,T],[`Cebola`,2,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Limão`,1,`un`,H],[`Salsa (molho)`,1,`un`,H]], [`Esfregue as tripas com sal e limão e coza-as com alho e louro cerca de 1 hora. Coza o feijão com cebola e louro.`,`Refogue cebola, bacon e frango, junte cenoura e chouriço e estufe tapado cerca de 45 minutos.`,`Junte feijão e tripas, tempere com cominhos e pimenta e ferva suavemente 10 a 15 minutos. Sirva com salsa.`]),rp(`massada-de-pota-e-berbigao`,`p-massada-pota-berbigao`,`Massada de pota e berbigão`,`Peixe`,50,`🦑`,false,[520,36,56,6,14,4], [[`Pota (lulas)`,500,`g`,P],[`Berbigão`,500,`g`,P],[`Massa cotovelos`,250,`g`,M],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Alho-francês`,1,`un`,H],[`Bacon`,80,`g`,T],[`Cenoura`,2,`un`,H],[`Pimentos`,1,`un`,H],[`Tomate triturado`,200,`g`,M],[`Vinho branco`,100,`ml`,M],[`Chouriço`,80,`g`,T],[`Coentros (molho)`,1,`un`,H],[`Manjericão (molho)`,1,`un`,H]], [`Limpe e corte a pota e salpique com pimentão. Refogue cebola, alho, alho-francês, bacon e louro e junte a cenoura.`,`Adicione berbigão e pota e cozinhe 10 minutos; junte o pimento, o tomate e o vinho e ferva 5 minutos.`,`Junte água, a massa e o chouriço e cozinhe cerca de 15 minutos até a massa estar al dente. Termine com coentros e manjericão.`]),rp(`favas-com-rojoes`,`p-favas-rojoes`,`Favas com rojões`,`Carne`,45,`🫘`,false,[600,38,30,3,34,11], [[`Favas`,600,`g`,C],[`Carne de porco (cachaço)`,500,`g`,T],[`Cebola`,1,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Aipo (talo)`,1,`un`,H],[`Tomate triturado`,100,`g`,M],[`Tomate`,2,`un`,H],[`Pão rústico (fatias)`,4,`un`,B],[`Coentros (molho)`,1,`un`,H]], [`Escalde as favas em água a ferver e retire-lhes a pele.`,`Frite a carne aos cubos, tempere com pimentão-doce e junte cebola, alho, aipo e tomate triturado; cozinhe tapado.`,`Junte as favas, cozinhe 10 minutos e adicione o tomate fresco em cubos.`,`Sirva com coentros e pão torrado.`]),rp(`feijoada-de-marisco`,`p-feijoada-marisco`,`Feijoada de marisco`,`Peixe`,50,`🦐`,false,[500,36,48,5,14,10], [[`Tamboril`,300,`g`,P],[`Camarão`,250,`g`,P],[`Mexilhões`,500,`g`,P],[`Feijão encarnado cozido`,500,`g`,M],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Aipo (talo)`,1,`un`,H],[`Pimentos`,1,`un`,H],[`Tomate`,2,`un`,H],[`Tomate triturado`,150,`g`,M],[`Vinho branco`,100,`ml`,M],[`Arroz`,250,`g`,M],[`Malagueta`,1,`un`,H],[`Salsa (molho)`,1,`un`,H]], [`Tempere o tamboril e o camarão com malagueta e alho. Abra os mexilhões no vinho branco e guarde o caldo.`,`Refogue cebola, alho, aipo e louro, junte pimento, tomate e polpa e cozinhe 10 minutos.`,`Adicione pimentão, cominhos, feijão e o caldo dos mexilhões; ferva 15 minutos e junte peixe e camarão por mais 5 a 6.`,`Sirva com salsa e arroz branco.`]),rp(`feijoada-de-lulas`,`p-feijoada-lulas`,`Feijoada de lulas`,`Peixe`,40,`🦑`,false,[440,32,50,4,11,10], [[`Lulas`,600,`g`,P],[`Feijão branco cozido`,500,`g`,M],[`Cenoura`,2,`un`,H],[`Tomate`,3,`un`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Arroz`,250,`g`,M],[`Limão`,1,`un`,H],[`Salsa (molho)`,1,`un`,H]], [`Suar a cebola, o alho e a cenoura em azeite 5 minutos, tapado.`,`Junte as lulas até ficarem opacas, depois o tomate, e cozinhe 5 minutos.`,`Adicione o feijão e cozinhe 20 minutos.`,`Coza o arroz com casca de limão e sirva com salsa.`]),rp(`ervilhas-batatas-ovos-escalfados`,`p-ervilhas-ovos`,`Ervilhas com batatas e ovos escalfados`,`Vegetariano`,40,`🥚`,true,[400,18,46,6,15,9], [[`Ervilhas congeladas`,500,`g`,C],[`Batata`,500,`g`,H],[`Ovos`,4,`un`,L],[`Cebola`,1,`un`,H],[`Concentrado de tomate`,2,`c. sopa`,M],[`Tomate`,2,`un`,H],[`Pão rústico (fatias)`,4,`un`,B],[`Salsa (molho)`,1,`un`,H],[`Azeite`,30,`ml`,M]], [`Misture no tacho azeite, batata em quartos e cebola; junte o concentrado diluído em água, especiarias e sal e acrescente as ervilhas. Cozinhe tapado cerca de 20 minutos.`,`Junte o tomate sem pele em cubos e, passados 10 minutos, abra quatro covas e parta um ovo em cada.`,`Tape até as claras firmarem. Sirva com salsa e pão torrado.`]),rp(`cataplana-de-marisco`,`p-cataplana-marisco`,`Cataplana de peixe e mexilhão`,`Peixe`,50,`🦞`,false,[430,38,32,5,16,5], [[`Pescada (postas)`,500,`g`,P],[`Mexilhões`,600,`g`,P],[`Batata`,500,`g`,H],[`Tomate`,3,`un`,H],[`Pimentos`,2,`un`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Vinho branco`,100,`ml`,M],[`Hortelã (molho)`,1,`un`,H],[`Limão`,1,`un`,H],[`Azeite`,40,`ml`,M]], [`Em camadas na cataplana: tomate e pimentos, batata em rodelas, o peixe, a cebola e o alho. Tempere com louro e sal.`,`Cubra com os mexilhões, regue com azeite e vinho e polvilhe com hortelã.`,`Feche e cozinhe em lume brando 35 a 40 minutos. Sirva com gomos de limão.`]),rp(`arroz-de-pato`,`p-arroz-pato`,`Arroz de pato`,`Massa e arroz`,80,`🦆`,false,[650,38,70,2,25,3], [[`Pato (peitos)`,600,`g`,T],[`Chouriço`,150,`g`,T],[`Toucinho fumado`,80,`g`,T],[`Vinho tinto`,150,`ml`,M],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Tomate triturado`,100,`g`,M],[`Arroz`,300,`g`,M],[`Azeite`,30,`ml`,M]], [`Coza o pato em água com vinho tinto, metade do chouriço, toucinho e louro durante 40 minutos; coe e guarde o caldo.`,`Faça um refogado de cebola, alho e tomate; junte o pato desfiado, o toucinho e o chouriço em cubos.`,`Junte o arroz e 400 ml de caldo com colorau e cozinhe 10 minutos.`,`Passe para um tabuleiro, decore com rodelas de chouriço e leve ao forno a 170 ºC cerca de 15 minutos.`]),rp(`arroz-de-tamboril`,`p-arroz-tamboril`,`Arroz de tamboril`,`Massa e arroz`,50,`🐟`,false,[530,34,66,5,13,3], [[`Tamboril`,500,`g`,P],[`Camarão`,150,`g`,P],[`Arroz`,300,`g`,M],[`Cebola`,2,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Coentros (molho)`,1,`un`,H],[`Pimentos`,1,`un`,H],[`Tomate`,2,`un`,H],[`Tomate triturado`,100,`g`,M],[`Malagueta`,1,`un`,H],[`Manteiga`,30,`g`,L],[`Hortelã (molho)`,1,`un`,H],[`Pão rústico (fatias)`,4,`un`,B]], [`Coza o tamboril em cubos e guarde a água.`,`Refogue cebola, alho e coentros, junte pimento, tomate e malagueta e depois o tomate triturado diluído na água do tamboril.`,`Adicione o arroz e, a meio da cozedura, o tamboril e o camarão.`,`Finalize com manteiga e hortelã e sirva com pão torrado.`]),rp(`polvo-a-lagareiro`,`p-polvo-lagareiro`,`Polvo à lagareiro`,`Peixe`,130,`🐙`,false,[570,45,38,2,27,4], [[`Polvo`,1200,`g`,P],[`Batata pequena`,800,`g`,H],[`Cebola`,1,`un`,H],[`Alho (dentes)`,6,`un`,H],[`Coentros (molho)`,1,`un`,H],[`Azeite`,120,`ml`,M]], [`Coloque o polvo num tabuleiro com azeite, cebola em meias-luas, louro e pimenta. Tape com alumínio e asse a 200 ºC cerca de 1h30.`,`Nos últimos 30 minutos, asse as batatas com sal grosso noutro tabuleiro; esmague-as e junte ao polvo.`,`Ferva o alho laminado em azeite 2 minutos, regue e leve ao forno com grill a 250 ºC durante 10 minutos. Sirva com coentros.`]),rp(`arroz-de-polvo`,`p-arroz-polvo`,`Arroz de polvo`,`Massa e arroz`,60,`🐙`,false,[510,35,66,4,10,3], [[`Polvo`,800,`g`,P],[`Arroz`,300,`g`,M],[`Cebola`,2,`un`,H],[`Alho (dentes)`,1,`un`,H],[`Tomate`,3,`un`,H],[`Vinho branco`,80,`ml`,M],[`Salsa (molho)`,1,`un`,H],[`Alface`,1,`un`,H]], [`Em água com cebola e louro a ferver, mergulhe e retire o polvo três vezes (30 segundos cada); depois cozinhe em lume brando cerca de 30 minutos.`,`Refogue cebola e alho, junte o tomate em cubos 12 minutos e o vinho.`,`Junte o arroz e o caldo do polvo, cozinhe cerca de 12 minutos, adicione o polvo cortado e acabe de cozer. Sirva com salsa e salada de alface.`]),rp(`tiborna-de-bacalhau`,`p-tiborna-bacalhau`,`Tiborna de bacalhau com couve`,`Peixe`,40,`🐟`,false,[510,36,40,2,22,5], [[`Lombos de bacalhau`,600,`g`,P],[`Broa de milho`,300,`g`,B],[`Couve`,300,`g`,H],[`Alho (dentes)`,4,`un`,H],[`Cebolinhas (pequenas)`,150,`g`,H],[`Azeitonas pretas`,60,`g`,M],[`Salsa (molho)`,1,`un`,H],[`Azeite`,60,`ml`,M]], [`Asse os lombos a 180 ºC com alhos esmagados, cebolinhas e azeite cerca de 15 minutos; lasque grosseiramente.`,`Coza a couve em água salgada, ficando tenra mas crocante.`,`Num prato fundo, alterne broa partida e couve, junte o bacalhau e regue com o azeite do assado. Termine com azeitonas e salsa.`]),rp(`bacalhau-a-gomes-de-sa`,`p-gomes-de-sa`,`Bacalhau à Gomes de Sá`,`Peixe`,40,`🐟`,false,[520,36,45,4,21,4], [[`Bacalhau demolhado`,600,`g`,P],[`Batata`,700,`g`,H],[`Cebola`,2,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Ovos`,3,`un`,L],[`Azeitonas pretas`,60,`g`,M],[`Salsa (molho)`,1,`un`,H],[`Azeite`,70,`ml`,M]], [`Coza o bacalhau com pele e a batata em cubos cerca de 15 minutos; limpe o peixe e faça lascas grossas.`,`Refogue alho, cebola em meias-luas e louro; junte bacalhau e batata e deixe apurar.`,`Decore com ovo cozido (9 minutos), azeitonas, salsa e um fio de azeite.`]),rp(`baba-de-camelo`,`p-baba-camelo`,`Baba de camelo`,`Sobremesa`,15,`🍮`,true,[320,8,50,48,10,0], [[`Leite condensado`,400,`g`,M],[`Ovos`,4,`un`,L]], [`Separe as claras das gemas; bata as claras em castelo e passe as gemas por um coador.`,`Misture o leite condensado com as gemas.`,`Envolva as claras com cuidado e leve ao frigorífico. Sirva frio.`]),rp(`bacalhau-a-bras`,`p-bacalhau-bras`,`Bacalhau à Brás`,`Peixe`,45,`🐟`,false,[570,34,44,3,29,3], [[`Bacalhau demolhado`,500,`g`,P],[`Batata palha`,200,`g`,M],[`Cebola`,2,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Ovos`,6,`un`,L],[`Azeitonas pretas`,60,`g`,M],[`Salsa (molho)`,1,`un`,H],[`Azeite`,60,`ml`,M]], [`Limpe e desfie o bacalhau. Use batata palha de pacote ou frite palitos finos bem secos.`,`Refogue cebola, alho e louro, junte o bacalhau, tape e cozinhe em lume brando até branquear.`,`Junte a batata e os ovos batidos e mexa suavemente, sem deixar secar. Finalize com salsa e azeitonas.`]),rp(`massada-de-peixe`,`p-massada-peixe`,`Massada de peixe com camarão`,`Peixe`,45,`🐟`,false,[510,38,58,6,12,4], [[`Pescada`,500,`g`,P],[`Camarão (com casca)`,250,`g`,P],[`Massa cotovelos`,250,`g`,M],[`Alho (dentes)`,2,`un`,H],[`Alho-francês`,1,`un`,H],[`Cebola`,1,`un`,H],[`Cenoura`,2,`un`,H],[`Tomate`,2,`un`,H],[`Coentros (molho)`,1,`un`,H]], [`Coza o peixe 10 minutos em água salgada, retire-o e ferva no caldo as cascas e cabeças dos camarões.`,`Refogue alho, alho-francês e cebola; junte cenoura, tomate e louro, tapado, até amolecer.`,`Triture e coe as cascas, junte o caldo ao refogado e cozinhe a massa até ficar al dente. Adicione o peixe em lascas e os coentros.`]),rp(`pastel-de-nata`,`p-pastel-nata`,`Pastel de nata`,`Sobremesa`,60,`🥧`,true,[260,5,32,17,13,1], [[`Massa folhada (rolo)`,1,`un`,B],[`Leite`,400,`ml`,L],[`Açúcar`,150,`g`,M],[`Farinha`,40,`g`,M],[`Ovos`,6,`un`,L],[`Limão`,1,`un`,H]], [`Aqueça o leite com casca de limão e canela em pau até levantar fervura. Misture açúcar e farinha e adicione ao leite quente.`,`Deixe arrefecer um pouco, junte ovos inteiros e gemas e leve ao lume a engrossar, mexendo.`,`Enrole a massa, corte rodelas de 3 cm e forre formas com os polegares humedecidos. Encha e asse a 240 ºC cerca de 15 minutos.`]),rp(`rojoes`,`p-rojoes-minhota`,`Rojões à minhota`,`Carne`,60,`🐖`,false,[620,40,18,2,43,3], [[`Carne de porco (cachaço e lombo)`,800,`g`,T],[`Vinho branco`,150,`ml`,M],[`Batata`,600,`g`,H],[`Banha`,40,`g`,M],[`Azeite`,20,`ml`,M],[`Salsa (molho)`,1,`un`,H]], [`Tempere a carne com sal, pimenta, colorau e vinho e deixe marinar pelo menos 1 hora.`,`Frite em banha e azeite, com cominhos, cerca de 10 minutos até dourar; reserve a gordura.`,`Coza as batatas com pele, descasque, corte em cubos e alloure na gordura dos rojões. Sirva com salsa.`]),rp(`cozido-a-portuguesa`,`p-cozido-portuguesa`,`Cozido à portuguesa`,`Carne`,60,`🍲`,false,[700,48,48,5,33,9], [[`Carne de vaca para cozer`,400,`g`,T],[`Entrecosto`,300,`g`,T],[`Frango (coxas)`,300,`g`,T],[`Chouriço`,150,`g`,T],[`Farinheira`,1,`un`,T],[`Morcela`,1,`un`,T],[`Couve`,400,`g`,H],[`Alho-francês`,1,`un`,H],[`Batata`,600,`g`,H],[`Nabo`,2,`un`,H],[`Cenoura`,3,`un`,H],[`Arroz`,250,`g`,M]], [`Coza as carnes na panela de pressão cerca de 25 minutos e reserve o caldo.`,`Junte os legumes às carnes com metade água e metade caldo e cozinhe cerca de 15 minutos.`,`Corte as carnes e sirva em travessa com os legumes, com arroz branco cozinhado no resto do caldo.`]),rp(`milhos`,`p-milhos`,`Milhos com frango e enchidos`,`Carne`,80,`🌽`,false,[700,46,60,3,28,6], [[`Milho para milhos (farinha grossa)`,300,`g`,M],[`Frango (coxas)`,500,`g`,T],[`Chouriço de sangue`,1,`un`,T],[`Salpicão`,150,`g`,T],[`Costeletas de porco`,400,`g`,T],[`Alcatra`,300,`g`,T],[`Cenoura`,2,`un`,H],[`Cebola`,2,`un`,H],[`Alho (dentes)`,3,`un`,H],[`Azeite`,30,`ml`,M],[`Salsa (molho)`,1,`un`,H]], [`Salgue as carnes de véspera e lave bem. Core o frango, refogue cebola, cenoura, alho e louro e cozinhe com os enchidos cerca de 30 minutos.`,`Refogue mais cebola e alho, junte o milho e vá juntando caldo, mexendo cerca de 20 minutos até cozer.`,`Grelhe costeletas e alcatra em fatias e sirva sobre os milhos, com os enchidos, salsa e mais caldo.`]),rp(`cachafrito-de-borreguinho`,`p-cachafrito`,`Cachafrito de borreguinho`,`Carne`,60,`🐑`,false,[560,42,8,2,38,2], [[`Borrego (pedaços)`,1000,`g`,T],[`Alho (dentes)`,5,`un`,H],[`Banha`,40,`g`,M],[`Massa de pimentão`,2,`c. sopa`,M],[`Vinho branco`,100,`ml`,M],[`Alface`,1,`un`,H],[`Cebola`,1,`un`,H],[`Coentros (molho)`,1,`un`,H],[`Hortelã (molho)`,1,`un`,H],[`Vinagre`,2,`c. sopa`,M],[`Azeite`,50,`ml`,M]], [`Pise o alho com sal e misture com banha, azeite e massa de pimentão; envolva o borrego e deixe repousar 8 a 12 horas.`,`Frite em lume brando num tacho, mexendo, até corar; refresque com o vinho branco e deixe reduzir.`,`Prepare a salada de alface e cebola com coentros, hortelã, azeite, vinagre e água. Sirva o cachafrito com coentros por cima.`]),rp(`filetes-de-bacalhau-com-arroz-de-linguas`,`p-filetes-bacalhau`,`Filetes de bacalhau com arroz de línguas`,`Peixe`,50,`🐟`,false,[600,40,62,3,20,4], [[`Lombos de bacalhau`,600,`g`,P],[`Leite`,150,`ml`,L],[`Farinha de milho`,60,`g`,M],[`Ovos`,2,`un`,L],[`Línguas de bacalhau`,200,`g`,P],[`Grelos`,250,`g`,H],[`Arroz`,250,`g`,M],[`Cebola`,1,`un`,H],[`Alho (dentes)`,2,`un`,H],[`Tomate`,2,`un`,H],[`Óleo de fritar`,300,`ml`,M],[`Salsa (molho)`,1,`un`,H]], [`Corte os lombos em filetes e deixe 10 minutos em leite com pimenta, noz-moscada, alho e louro. Escorra, passe por ovo e farinha de milho e frite até dourar.`,`Refogue cebola e alho, junte o tomate, água e os grelos cortados.`,`Quando ferver, junte o arroz e as línguas e cozinhe 20 minutos em lume brando. Sirva com os filetes e salsa.`]));const AUTS=[`Todos os autores`,`Receitas da casa`,...new Set(RECIPES.filter(x=>x.src).map(x=>x.src.a))];const srcBlock=rc=>rc.src?`<div class="srcbox"><b>📚 ${esc(rc.src.a)}</b>, ${esc(rc.src.l)}<br><small>${esc(rc.src.note||``)}</small>${rc.src.u?`<br><a href="${rc.src.u}" target="_blank" rel="noopener noreferrer">Ver receita original (em inglês)</a>`:``}</div>`:``;
+const BY=Object.fromEntries(RECIPES.map(x=>[x.id,x]));
+
+/* ============ ESTADO ============ */
+const KEY="ementa-familia-v1";
+let S={family:4,plan:{},checked:{},extras:[],favs:[]};
+try{const raw=localStorage.getItem(KEY);if(raw){S=Object.assign(S,JSON.parse(raw))}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+for(const k in S.plan){S.plan[k]=(S.plan[k]||[]).filter(id=>BY[id])}S.favs=(S.favs||[]).filter(id=>BY[id]);let view="recipes",F={q:"",cat:"Todas",aut:"Todos os autores",flags:{}},sheet=null,opt={plan:true,recipes:false},clearArm=false;
+
+/* ============ UTILITÁRIOS ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num=n=>String(n).replace(".",",");
+const pk=(d,s)=>d+"|"+s;
+const slotItems=(d,s)=>S.plan[pk(d,s)]||[];
+const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+function fmt(q,u,ceil){
+  if(u==="g"||u==="ml"){
+    const step=ceil?10:5;
+    const v=Math.max(step,(ceil?Math.ceil(q/step):Math.round(q/step))*step);
+    if(v>=1000)return num(Math.round(v/10)/100)+(u==="g"?" kg":" l");
+    return v+" "+u;
+  }
+  const v=ceil?Math.max(1,Math.ceil(q-1e-6)):Math.max(0.5,Math.round(q*2)/2);
+  return num(v)+" "+u;
+}
+const scaled=(rc)=>rc.ing.map(([n,q,u,s])=>({n,u,s,txt:fmt(q*S.family/4,u,false)}));
+const pessoas=()=>S.family+(S.family===1?" pessoa":" pessoas");
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),1900)}
+const isFav=id=>S.favs.includes(id);
+
+/* ============ LISTA DE COMPRAS ============ */
+function shopItems(){
+  const m={};
+  for(const k in S.plan){for(const id of S.plan[k]){const rc=BY[id];if(!rc)continue;
+    for(const [n,q,u,sec] of rc.ing){const key=n+"|"+u;(m[key]=m[key]||{key,n,u,sec,q:0}).q+=q*S.family/4}}}
+  return Object.values(m).map(i=>({...i,txt:fmt(i.q,i.u,true),done:!!S.checked[i.key]}));
+}
+function groupedShop(){
+  const items=shopItems(),g={};
+  items.forEach(i=>(g[i.sec]=g[i.sec]||[]).push(i));
+  for(const k in g)g[k].sort((a,b)=>a.n.localeCompare(b.n,"pt"));
+  return AISLES.filter(a=>g[a]).map(a=>[a,g[a]]);
+}
+const pending=()=>shopItems().filter(i=>!i.done).length+S.extras.filter(e=>!e.done).length;
+
+/* ============ TEXTO PARA EXPORTAR ============ */
+function recipeText(rc){
+  let t=rc.n.toUpperCase()+"\nPara "+pessoas()+" | "+rc.t+" min\n"+(rc.src?"Fonte: "+rc.src.a+", "+rc.src.l+(rc.src.u?" ("+rc.src.u+")":"")+"\n":"")+"\n";
+  t+="Por pessoa: "+rc.k+" kcal | Proteína "+rc.p+" g | Hidratos "+rc.h+" g (açúcares "+rc.a+" g) | Gordura "+rc.g+" g | Fibra "+rc.f+" g\n\n";
+  t+="INGREDIENTES (lista para o supermercado)\n"+scaled(rc).map(i=>"[ ] "+i.n+" - "+i.txt).join("\n");
+  t+="\n\nPREPARAÇÃO\n"+rc.steps.map((s,i)=>(i+1)+". "+s).join("\n");
+  return t;
+}
+function planText(){
+  let t="PLANO DA SEMANA\n";
+  DAYS.forEach(d=>{
+    const lines=SLOTS.map(s=>{const ids=slotItems(d,s);return ids.length?"  "+s+": "+ids.map(i=>BY[i].n).join(" + "):null}).filter(Boolean);
+    if(lines.length)t+="\n"+d+"\n"+lines.join("\n")+"\n";
+  });
+  return t;
+}
+function shopText(o){
+  const groups=groupedShop();
+  let t="LISTA DE COMPRAS ("+pessoas()+")\n";
+  if(!groups.length&&!S.extras.length)t+="\n(vazia)\n";
+  groups.forEach(([a,items])=>{t+="\n"+a.toUpperCase()+"\n"+items.map(i=>"["+(i.done?"x":" ")+"] "+i.n+" - "+i.txt).join("\n")+"\n"});
+  if(S.extras.length)t+="\nOUTROS\n"+S.extras.map(e=>"["+(e.done?"x":" ")+"] "+e.t).join("\n")+"\n";
+  if(o.plan)t+="\n"+planText();
+  if(o.recipes){
+    const ids=[...new Set(Object.values(S.plan).flat())];
+    if(ids.length)t+="\nRECEITAS\n\n"+ids.map(i=>recipeText(BY[i])).join("\n\n----------\n\n")+"\n";
+  }
+  return t.trim();
+}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);toast("Copiado!")}
+  catch(e){const ta=$("#exptext");if(ta){ta.focus();ta.select();try{document.execCommand("copy");toast("Copiado!")}catch(_){toast("Selecione o texto e copie")}}else toast("Não foi possível copiar")}
+}
+function shareText(title,t){
+  if(navigator.share){navigator.share({title,text:t}).catch(()=>{})}else copyText(t);
+}
+
+/* ============ VISTAS ============ */
+const chip=(label,on,a,data,cls)=>`<button class="chip ${cls||""} ${on?"on":""}" data-a="${a}" ${data||""}>${label}</button>`;
+function vRecipes(){
+  const fl=[["fav","♥ Favoritas"],["quick","⏱ Até 30 min"],["light","Leves (até 400 kcal)"],["prot","Muita proteína (30 g+)"],["lows","Pouco açúcar (até 5 g)"],["veg","🌱 Vegetariano"]];
+  return `<input id="q" class="search" type="search" placeholder="Procurar receita ou ingrediente" value="${esc(F.q)}" autocomplete="off">
+  <div class="chips">${CATS.map(c=>chip(c,F.cat===c,"cat",`data-v="${c}"`)).join("")}</div>
+  <div class="chips">${fl.map(([k,l])=>chip(l,!!F.flags[k],"flag",`data-v="${k}"`,"alt")).join("")}</div>
+  <div class='chips'><span class='flab'>Autor</span>${AUTS.map(c=>chip(c,F.aut===c,`aut`,`data-v="${esc(c)}"`)).join(``)}</div><div class="count" id="rcount"></div><div class="list" id="rlist"></div>
+  <p class="note">Valores nutricionais aproximados, por pessoa. Podem variar com as marcas e quantidades usadas. As receitas com 📚 são versões nossas, inspiradas nos pratos do autor indicado.</p>`;
+}
+function filtered(){
+  const q=norm(F.q.trim());
+  return RECIPES.filter(x=>{
+    if(F.cat!=="Todas"&&x.cat!==F.cat)return false;
+    if(F.aut!==`Todos os autores`){if(F.aut===`Receitas da casa`){if(x.src)return false}else if(!x.src||x.src.a!==F.aut)return false}
+    
+    const f=F.flags;
+    if(f.fav&&!isFav(x.id))return false;
+    if(f.quick&&x.t>30)return false;
+    if(f.light&&x.k>400)return false;
+    if(f.prot&&x.p<30)return false;
+    if(f.lows&&x.a>5)return false;
+    if(f.veg&&!x.veg)return false;
+    if(q&&!(norm(x.n).includes(q)||x.ing.some(i=>norm(i[0]).includes(q))||(x.src&&norm(x.src.a+" "+x.src.l).includes(q))))return false;
+    return true;
+  });
+}
+function card(rc){
+  return `<article class="card" tabindex="0" role="button" data-a="open" data-id="${rc.id}">
+    <div class="thumb">${rc.e}</div>
+    <div class="cbody"><h3>${esc(rc.n)}</h3>
+      <div class="meta"><span>⏱ ${rc.t} min</span><span>${rc.cat}</span>${rc.veg?'<span class="tag">Vegetariano</span>':""}</div>
+      <div class="nut"><b>${rc.k}</b> kcal &nbsp;<b>${rc.p} g</b> proteína &nbsp;<b>${rc.a} g</b> açúcar</div>${rc.src?`<div class="srcbadge">📚 ${esc(rc.src.a)}, ${esc(rc.src.l)}</div>`:""}</div>
+    <button class="heart ${isFav(rc.id)?"on":""}" data-a="fav" data-id="${rc.id}" aria-label="Favorita">♥</button></article>`;
+}
+const CATICON={Carne:`🥩`,Peixe:`🐟`,Sopa:`🥣`,"Massa e arroz":`🍝`,Vegetariano:`🥗`,"Pequeno-almoço":`🥞`,Sobremesa:`🍰`};function grouped(L){return CATS.slice(1).map(c=>{const g=L.filter(x=>x.cat===c);return g.length?`<h2 class='grp'><span>${CATICON[c]||``}</span>${c}<small>${g.length}</small></h2><div class='gl'>${g.map(card).join(``)}</div>`:``}).join(``)}
+function renderList(){
+  const L=filtered();
+  $("#rcount").textContent=L.length+(L.length===1?" receita":" receitas");
+  $("#rlist").innerHTML=L.length?grouped(L):`<div class="empty" style="grid-column:1/-1">Nenhuma receita com estes filtros. Tente retirar um filtro.</div>`;
+}
+function dayTotals(d){
+  let k=0,p=0,a=0,n=0;
+  SLOTS.forEach(s=>slotItems(d,s).forEach(id=>{const x=BY[id];if(x){k+=x.k;p+=x.p;a+=x.a;n++}}));
+  return n?{k,p:Math.round(p),a:Math.round(a)}:null;
+}
+function vWeek(){
+  const any=Object.values(S.plan).some(a=>a.length);
+  let h=`<div class="bar"><button class="btn lemon" data-a="suggest">✨ Sugerir semana</button>
+  <button class="btn ghost" data-a="clear">${clearArm?"Toque para confirmar":"Limpar"}</button></div><button class="btn ghost" style="width:100%;margin-bottom:12px" data-a="weekexp">Exportar calendário (PDF ou imagem)</button>
+  <p class="note" style="margin:0 0 14px;text-align:left">A sugestão preenche só os espaços vazios. Os totais são por pessoa.</p>`;
+  DAYS.forEach(d=>{
+    const t=dayTotals(d);
+    h+=`<section class="day"><header><h3>${d}</h3>${t?`<span class="tot">${t.k} kcal, ${t.p} g proteína, ${t.a} g açúcar</span>`:""}</header>`;
+    SLOTS.forEach(s=>{
+      h+=`<div class="slot"><div class="slabel">${s}</div>`;
+      slotItems(d,s).forEach((id,i)=>{const x=BY[id];if(!x)return;
+        h+=`<div class="item"><span class="nm" data-a="open" data-id="${id}">${x.e} ${esc(x.n)}</span><small>${x.k} kcal</small><button class="x" data-a="rm" data-d="${d}" data-s="${s}" data-i="${i}" aria-label="Remover">×</button></div>`});
+      h+=`<button class="add" data-a="pick" data-d="${d}" data-s="${s}">+ Adicionar</button></div>`;
+    });
+    h+=`</section>`;
+  });
+  return h;
+}
+function vShop(){
+  const groups=groupedShop(),items=shopItems();
+  const total=items.length+S.extras.length,done=items.filter(i=>i.done).length+S.extras.filter(e=>e.done).length;
+  let h="";
+  if(total){
+    h+=`<div class="prog"><div class="t"><span>${total-done===0?"Compras completas":"Faltam "+(total-done)+" de "+total}</span><span>${pessoas()}</span></div><div class="meter"><i style="width:${Math.round(done/total*100)}%"></i></div></div>`;
+  }else{
+    h+=`<div class="empty">A lista está vazia. Adicione receitas à semana e os ingredientes aparecem aqui, já somados.<div class="acts" style="justify-content:center"><button class="btn" style="flex:none" data-a="tab" data-v="week">Planear a semana</button></div></div>`;
+  }
+  groups.forEach(([a,list])=>{
+    h+=`<section class="aisle"><h3>${a}</h3>${list.map(i=>`<button class="row ${i.done?"done":""}" data-a="chk" data-k="${esc(i.key)}"><span class="box">${i.done?"✓":""}</span><span class="n">${esc(i.n)}</span><span class="q">${i.txt}</span></button>`).join("")}</section>`;
+  });
+  if(S.extras.length){
+    h+=`<section class="aisle"><h3>Outros</h3>${S.extras.map((e,i)=>`<div class="row ${e.done?"done":""}" style="gap:6px"><button class="row ${e.done?"done":""}" style="border:0;padding:0;flex:1" data-a="chkx" data-i="${i}"><span class="box">${e.done?"✓":""}</span><span class="n">${esc(e.t)}</span></button><button class="x" data-a="rmx" data-i="${i}" aria-label="Apagar">×</button></div>`).join("")}</section>`;
+  }
+  h+=`<div class="addx"><input id="xin" class="search" placeholder="Adicionar outro artigo" autocomplete="off"><button class="btn" data-a="addx">Adicionar</button></div>`;
+  if(done)h+=`<button class="btn ghost" style="width:100%;margin-bottom:14px" data-a="uncheck">Desmarcar tudo</button>`;
+  h+=`<section class="export"><h3>Exportar</h3>
+   <div class="opt">${chip("Incluir plano da semana",opt.plan,"opt",'data-v="plan"',"alt")}${chip("Incluir receitas completas",opt.recipes,"opt",'data-v="recipes"',"alt")}</div>
+   <textarea id="exptext" class="txt" readonly>${esc(shopText(opt))}</textarea>
+   <div class="acts" style="margin-top:0"><button class="btn" data-a="copyshop">Copiar texto</button><button class="btn ghost" data-a="shareshop">Partilhar</button></div>${DL?`<div class='acts' style='margin-top:8px'><button class='btn lemon' data-a='shoppdf'>Guardar PDF</button><button class='btn lemon' data-a='shoppng'>Guardar imagem</button></div>`:``}</section>`;
+  return h;
+}
+
+/* ============ FOLHAS ============ */
+function nutBox(rc){
+  const pc=rc.p*4,hc=rc.h*4,gc=rc.g*9,tot=pc+hc+gc||1;
+  const w=x=>(x/tot*100).toFixed(1)+"%";
+  return `<div class="nbox"><div class="kcal">${rc.k}<small>kcal por pessoa</small></div>
+    <div class="stack" aria-hidden="true"><i style="width:${w(pc)};background:var(--bar-p)"></i><i style="width:${w(hc)};background:var(--bar-h)"></i><i style="width:${w(gc)};background:var(--bar-g)"></i></div>
+    <div class="ngrid">
+      <div><span><span class="dot" style="background:var(--bar-p)"></span>Proteína</span><b>${rc.p} g</b></div>
+      <div><span><span class="dot" style="background:var(--bar-h)"></span>Hidratos</span><b>${rc.h} g</b></div>
+      <div><span>dos quais açúcares</span><b>${rc.a} g</b></div>
+      <div><span><span class="dot" style="background:var(--bar-g)"></span>Gordura</span><b>${rc.g} g</b></div>
+      <div><span>Fibra</span><b>${rc.f} g</b></div>
+    </div></div>`;
+}
+function sDetail(rc){
+  return `<div class="shead"><div class="thumb">${rc.e}</div><div style="flex:1;min-width:0"><h2>${esc(rc.n)}</h2><div class="meta"><span>⏱ ${rc.t} min</span><span>${rc.cat}</span>${rc.veg?'<span class="tag">Vegetariano</span>':""}</div></div><button class="close" data-a="close" aria-label="Fechar">×</button></div>
+  ${srcBlock(rc)}${nutBox(rc)}
+  <h3 class="sec">Ingredientes para ${pessoas()}</h3>
+  <ul class="ing">${scaled(rc).map(i=>`<li><span>${esc(i.n)}</span><b>${i.txt}</b></li>`).join("")}</ul>
+  <h3 class="sec">Preparação</h3><ol class="steps">${rc.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+  <div class="acts"><button class="btn" data-a="addsheet" data-id="${rc.id}">Adicionar à semana</button>
+  <button class="btn ghost" data-a="exprecipe" data-id="${rc.id}">Exportar em texto</button>
+  <button class="btn ghost" style="flex:none" data-a="fav" data-id="${rc.id}" aria-label="Favorita"><span style="color:${isFav(rc.id)?"var(--tomato)":"var(--muted)"}">♥</span></button></div>`;
+}
+function sAdd(){
+  const rc=BY[sheet.id];
+  return `<div class="shead"><h2>Adicionar à semana</h2><button class="close" data-a="close" aria-label="Fechar">×</button></div>
+  <p style="margin:0 0 6px;color:var(--muted)">${rc.e} ${esc(rc.n)}</p>
+  <h3 class="sec" style="margin-top:12px">Dia</h3><div class="opt">${DAYS.map(d=>chip(d,sheet.day===d,"setday",`data-v="${d}"`)).join("")}</div>
+  <h3 class="sec" style="margin-top:12px">Refeição</h3><div class="opt">${SLOTS.map(s=>chip(s,sheet.slot===s,"setslot",`data-v="${s}"`)).join("")}</div>
+  <div class="acts"><button class="btn" data-a="confirmadd">Adicionar</button></div>`;
+}
+function pickList(){
+  const q=norm(sheet.q||"");
+  let L=RECIPES.filter(x=>sheet.all||(sheet.slot==="Pequeno-almoço"?x.cat==="Pequeno-almoço":x.cat!=="Pequeno-almoço"));
+  if(q)L=RECIPES.filter(x=>norm(x.n).includes(q));
+  return L.map(x=>`<button class="pick" data-a="pickadd" data-id="${x.id}"><div class="thumb">${x.e}</div><span class="nm">${esc(x.n)}<small>${x.cat}, ${x.k} kcal, ${x.p} g proteína</small></span></button>`).join("")||`<div class="empty">Sem resultados.</div>`;
+}
+function sPick(){
+  return `<div class="shead"><h2>${sheet.day}: ${sheet.slot.toLowerCase()}</h2><button class="close" data-a="close" aria-label="Fechar">×</button></div>
+  <input id="pq" class="search" type="search" placeholder="Procurar receita" value="${esc(sheet.q||"")}" autocomplete="off">
+  <div class="opt" style="margin-top:10px">${chip(sheet.all?"A mostrar todas":"Mostrar todas as receitas",sheet.all,"pickall","","alt")}</div>
+  <div id="plist">${pickList()}</div>`;
+}
+function sExport(){
+  return `<div class="shead"><h2>${esc(sheet.title)}</h2><button class="close" data-a="close" aria-label="Fechar">×</button></div>
+  <textarea id="exptext" class="txt" readonly style="min-height:320px">${esc(sheet.text)}</textarea>
+  <div class="acts" style="margin-top:0"><button class="btn" data-a="copysheet">Copiar texto</button><button class="btn ghost" data-a="sharesheet">Partilhar</button></div>`;
+}
+function renderSheet(){
+  const w=$("#sheetwrap");
+  if(!sheet){w.classList.remove("show");w.innerHTML="";document.body.style.overflow="";return}
+  let inner="";
+  if(sheet.type==="detail")inner=sDetail(BY[sheet.id]);
+  else if(sheet.type==="add")inner=sAdd();
+  else if(sheet.type==="pick")inner=sPick();
+  else if(sheet.type==="export")inner=sExport();else if(sheet.type==="weekexp")inner=sWeekExp();
+  w.innerHTML=`<div class="sheet" role="dialog" aria-modal="true">${inner}</div>`;
+  w.classList.add("show");document.body.style.overflow="hidden";
+}
+
+/* ============ EXPORTAR CALENDÁRIO ============ */const NL=String.fromCharCode(10);let DL=null,lastCv=null;(async()=>{try{if(window.claude&&window.claude.use)DL=await window.claude.use(`downloads`);if(DL&&view===`shop`)render()}catch(e){DL=null}if(!DL){DL={save:async({filename,data})=>{const u=URL.createObjectURL(data);const a=document.createElement(`a`);a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000)}};if(view===`shop`)render()}})();function wrapText(g,t,maxW){const w=t.split(` `),lines=[];let l=``;for(const x of w){const n=l?l+` `+x:x;if(g.measureText(n).width>maxW&&l){lines.push(l);l=x}else l=n}if(l)lines.push(l);return lines}function drawWeek(){const W=1684,HH=1190,c=document.createElement(`canvas`);c.width=W;c.height=HH;const g=c.getContext(`2d`);const ft=(w,s)=>w+` `+s+`px Figtree,system-ui,-apple-system,Segoe UI,Roboto,sans-serif`;g.fillStyle=`#ffffff`;g.fillRect(0,0,W,HH);g.fillStyle=`#1d4ea0`;g.fillRect(0,0,W,104);g.fillStyle=`#ffffff`;g.textBaseline=`middle`;g.textAlign=`left`;g.font=ft(800,46);g.fillText(`Ementa da semana`,50,52);g.font=ft(600,26);g.textAlign=`right`;g.fillText(pessoas(),W-50,52);g.textAlign=`left`;const L=50,T=128,labW=150,cw=(W-2*L-labW)/7,hh=52,foot=118,bottom=HH-44,rows=(bottom-foot-T-hh)/3;DAYS.forEach((d,i)=>{const x=L+labW+i*cw;g.fillStyle=`#e3ecfb`;g.fillRect(x,T,cw,hh);g.strokeStyle=`#dde5f0`;g.lineWidth=2;g.strokeRect(x,T,cw,hh);g.fillStyle=`#14213d`;g.font=ft(700,24);g.textAlign=`center`;g.fillText(d,x+cw/2,T+hh/2)});g.textAlign=`left`;const labels=[[`Pequeno-`,`almoço`],[`Almoço`],[`Jantar`]];SLOTS.forEach((s,r)=>{const y=T+hh+r*rows;g.fillStyle=`#f4f7fb`;g.fillRect(L,y,labW,rows);g.strokeStyle=`#dde5f0`;g.strokeRect(L,y,labW,rows);g.fillStyle=`#14213d`;g.font=ft(700,24);g.textAlign=`center`;labels[r].forEach((t,k)=>g.fillText(t,L+labW/2,y+rows/2+(k-(labels[r].length-1)/2)*30));g.textAlign=`left`;DAYS.forEach((d,i)=>{const x=L+labW+i*cw;g.strokeStyle=`#dde5f0`;g.lineWidth=2;g.strokeRect(x,y,cw,rows);g.save();g.beginPath();g.rect(x+1,y+1,cw-2,rows-2);g.clip();let ty=y+14;g.textBaseline=`top`;slotItems(d,s).forEach(id=>{const rc=BY[id];if(!rc)return;g.fillStyle=`#14213d`;g.font=ft(700,20);wrapText(g,rc.n,cw-24).slice(0,3).forEach(line=>{g.fillText(line,x+12,ty);ty+=25});g.fillStyle=`#5d6b85`;g.font=ft(500,18);g.fillText(rc.k+` kcal`,x+12,ty);ty+=38});g.restore()})});g.textBaseline=`middle`;const fy=bottom-foot;g.fillStyle=`#f4f7fb`;g.fillRect(L,fy,labW,foot);g.strokeStyle=`#dde5f0`;g.strokeRect(L,fy,labW,foot);g.fillStyle=`#14213d`;g.font=ft(700,22);g.textAlign=`center`;g.fillText(`Por pessoa`,L+labW/2,fy+foot/2);DAYS.forEach((d,i)=>{const x=L+labW+i*cw,t=dayTotals(d);g.fillStyle=`#e3ecfb`;g.fillRect(x,fy,cw,foot);g.strokeStyle=`#dde5f0`;g.strokeRect(x,fy,cw,foot);g.fillStyle=`#14213d`;g.textAlign=`center`;if(t){g.font=ft(800,28);g.fillText(t.k+` kcal`,x+cw/2,fy+28);g.font=ft(500,19);g.fillText(t.p+` g proteína`,x+cw/2,fy+66);g.fillText(t.a+` g açúcar`,x+cw/2,fy+92)}else{g.font=ft(600,24);g.fillText(`—`,x+cw/2,fy+foot/2)}});g.fillStyle=`#5d6b85`;g.font=ft(500,17);g.textAlign=`center`;g.fillText(`Valores nutricionais aproximados, por pessoa. Ementa da Família.`,W/2,HH-20);return c}async function buildPreview(){try{if(document.fonts&&document.fonts.load)await document.fonts.load(`700 20px Figtree`)}catch(e){}lastCv=drawWeek();const wrap=$(`#cvwrap`);if(wrap){lastCv.style.cssText=`width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:#fff`;wrap.innerHTML=``;wrap.appendChild(lastCv)}}function makePdf(jpeg,w,h){const enc=s=>new TextEncoder().encode(s);const parts=[],offs=[];let len=0;const push=b=>{const u=typeof b===`string`?enc(b):b;parts.push(u);len+=u.length};push(`%PDF-1.4`+NL);offs[1]=len;push(`1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj`+NL);offs[2]=len;push(`2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj`+NL);offs[3]=len;push(`3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 842 595]/Resources<</XObject<</Im0 4 0 R>>>>/Contents 5 0 R>>endobj`+NL);offs[4]=len;push(`4 0 obj<</Type/XObject/Subtype/Image/Width `+w+`/Height `+h+`/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length `+jpeg.length+`>>stream`+NL);push(jpeg);push(NL+`endstream`+NL+`endobj`+NL);const cs=`q 842 0 0 595 0 0 cm /Im0 Do Q`;offs[5]=len;push(`5 0 obj<</Length `+cs.length+`>>stream`+NL+cs+NL+`endstream`+NL+`endobj`+NL);const xr=len;let x=`xref`+NL+`0 6`+NL+`0000000000 65535 f `+NL;for(let i=1;i<=5;i++)x+=String(offs[i]).padStart(10,`0`)+` 00000 n `+NL;push(x+`trailer<</Size 6/Root 1 0 R>>`+NL+`startxref`+NL+xr+NL+`%%EOF`);return new Blob(parts,{type:`application/pdf`})}const blobOf=(cv,type,q)=>new Promise(res=>cv.toBlob(res,type,q));async function saveWeek(kind){if(!DL||!lastCv){toast(`Guardar ficheiros não está disponível aqui`);return}try{if(kind===`png`){const b=await blobOf(lastCv,`image/png`);await DL.save({filename:`ementa-semana.png`,data:b})}else{const b=await blobOf(lastCv,`image/jpeg`,0.92);const u=new Uint8Array(await b.arrayBuffer());await DL.save({filename:`ementa-semana.pdf`,data:makePdf(u,lastCv.width,lastCv.height)})}toast(`Ficheiro guardado`)}catch(e){if(!e||e.code!==`declined`)toast(`Não foi possível guardar o ficheiro`)}}function shopEntries(){const e=[];groupedShop().forEach(([a,items])=>{e.push({h:a});items.forEach(i=>e.push({n:i.n,q:i.txt,d:i.done}))});if(S.extras.length){e.push({h:`Outros`});S.extras.forEach(x=>e.push({n:x.t,q:``,d:x.done}))}return e}function drawShopPages(single){const W=1190,M=60,GAP=40,colW=(W-2*M-GAP)/2,RH=46,HRH=66,ents=shopEntries();let HH=1684;const top1=150,top2=100;if(single){const total=ents.reduce((s,e)=>s+(e.h?HRH:RH),0);HH=top1+Math.ceil(total/2)+2*(HRH+RH)+80}const bottom=HH-80,pages=[];let cv,g,col,y,top;const ft=(w,s)=>w+` `+s+`px Figtree,system-ui,-apple-system,Segoe UI,Roboto,sans-serif`;const newPage=first=>{cv=document.createElement(`canvas`);cv.width=W;cv.height=HH;g=cv.getContext(`2d`);g.fillStyle=`#ffffff`;g.fillRect(0,0,W,HH);g.textBaseline=`middle`;if(first){g.fillStyle=`#1d4ea0`;g.fillRect(0,0,W,110);g.fillStyle=`#ffffff`;g.font=ft(800,46);g.textAlign=`left`;g.fillText(`Lista de compras`,M,55);g.font=ft(600,26);g.textAlign=`right`;g.fillText(pessoas(),W-M,55);top=top1}else{g.fillStyle=`#5d6b85`;g.font=ft(600,24);g.textAlign=`left`;g.fillText(`Lista de compras (continuação)`,M,50);top=top2}g.textAlign=`left`;col=0;y=top;pages.push(cv)};newPage(true);ents.forEach(e=>{const need=e.h?HRH+2*RH:RH;if(y+need>bottom){if(col===0){col=1;y=top}else newPage(false)}const x=M+col*(colW+GAP);if(e.h){g.fillStyle=`#1d4ea0`;g.font=ft(800,30);g.textAlign=`left`;g.fillText(e.h,x,y+HRH/2+4);g.strokeStyle=`#1d4ea0`;g.lineWidth=2;g.beginPath();g.moveTo(x,y+HRH-8);g.lineTo(x+colW,y+HRH-8);g.stroke();y+=HRH;return}g.strokeStyle=`#1d4ea0`;g.lineWidth=3;const bx=x,by=y+RH/2-14;if(e.d){g.fillStyle=`#4f7a2f`;g.fillRect(bx,by,28,28);g.strokeStyle=`#ffffff`;g.lineWidth=4;g.beginPath();g.moveTo(bx+6,by+15);g.lineTo(bx+12,by+21);g.lineTo(bx+22,by+8);g.stroke()}else g.strokeRect(bx,by,28,28);g.fillStyle=e.d?`#8a97ad`:`#14213d`;g.font=ft(700,24);g.textAlign=`right`;g.fillText(e.q,x+colW,y+RH/2);const qw=g.measureText(e.q).width;g.font=ft(500,24);g.textAlign=`left`;let nm=e.n;const maxW=colW-44-qw-16;while(nm.length>1&&g.measureText(nm).width>maxW)nm=nm.slice(0,-1);if(nm!==e.n)nm=nm.trimEnd()+`…`;g.fillText(nm,x+44,y+RH/2);if(e.d){const w=g.measureText(nm).width;g.strokeStyle=`#8a97ad`;g.lineWidth=2;g.beginPath();g.moveTo(x+44,y+RH/2);g.lineTo(x+44+w,y+RH/2);g.stroke()}g.strokeStyle=`#eef2f8`;g.lineWidth=2;g.beginPath();g.moveTo(x+44,y+RH);g.lineTo(x+colW,y+RH);g.stroke();y+=RH});pages.forEach((c,i)=>{const k=c.getContext(`2d`);k.fillStyle=`#5d6b85`;k.font=ft(500,18);k.textAlign=`center`;k.textBaseline=`middle`;k.fillText(`Ementa da Família   página `+(i+1)+` de `+pages.length,W/2,c.height-36)});return pages}function makePdfN(jpegs,w,h,pw,ph){const enc=s=>new TextEncoder().encode(s);const parts=[],offs=[];let len=0;const push=b=>{const u=typeof b===`string`?enc(b):b;parts.push(u);len+=u.length};const n=jpegs.length;push(`%PDF-1.4`+NL);offs[1]=len;push(`1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj`+NL);const kids=jpegs.map((_,i)=>(3+3*i)+` 0 R`).join(` `);offs[2]=len;push(`2 0 obj<</Type/Pages/Kids[`+kids+`]/Count `+n+`>>endobj`+NL);jpegs.forEach((jp,i)=>{const p=3+3*i;offs[p]=len;push(p+` 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 `+pw+` `+ph+`]/Resources<</XObject<</Im0 `+(p+1)+` 0 R>>>>/Contents `+(p+2)+` 0 R>>endobj`+NL);offs[p+1]=len;push((p+1)+` 0 obj<</Type/XObject/Subtype/Image/Width `+w+`/Height `+h+`/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length `+jp.length+`>>stream`+NL);push(jp);push(NL+`endstream`+NL+`endobj`+NL);const cs=`q `+pw+` 0 0 `+ph+` 0 0 cm /Im0 Do Q`;offs[p+2]=len;push((p+2)+` 0 obj<</Length `+cs.length+`>>stream`+NL+cs+NL+`endstream`+NL+`endobj`+NL)});const total=3+3*n;const xr=len;let x=`xref`+NL+`0 `+total+NL+`0000000000 65535 f `+NL;for(let i=1;i<total;i++)x+=String(offs[i]).padStart(10,`0`)+` 00000 n `+NL;push(x+`trailer<</Size `+total+`/Root 1 0 R>>`+NL+`startxref`+NL+xr+NL+`%%EOF`);return new Blob(parts,{type:`application/pdf`})}async function saveShop(kind){if(!DL){toast(`Guardar ficheiros não está disponível aqui`);return}if(!shopEntries().length){toast(`A lista está vazia`);return}try{try{if(document.fonts&&document.fonts.load)await document.fonts.load(`700 20px Figtree`)}catch(e){}if(kind===`png`){const pg=drawShopPages(true);const b=await blobOf(pg[0],`image/png`);await DL.save({filename:`lista-de-compras.png`,data:b})}else{const pg=drawShopPages(false);const js=[];for(const c of pg){const b=await blobOf(c,`image/jpeg`,0.92);js.push(new Uint8Array(await b.arrayBuffer()))}await DL.save({filename:`lista-de-compras.pdf`,data:makePdfN(js,1190,1684,595,842)})}toast(`Ficheiro guardado`)}catch(e){if(!e||e.code!==`declined`)toast(`Não foi possível guardar o ficheiro`)}}
+function sWeekExp(){return `<div class='shead'><h2>Exportar calendário</h2><button class='close' data-a='close' aria-label='Fechar'>×</button></div><div id='cvwrap'><div class='empty'>A preparar a imagem…</div></div><div class='acts'>${DL?`<button class='btn' data-a='dlpng'>Guardar imagem (PNG)</button><button class='btn' data-a='dlpdf'>Guardar PDF</button>`:``}<button class='btn ghost' data-a='weektext'>Ver como texto</button></div>${DL?``:`<p class='note'>Guardar ficheiros não está disponível neste ecrã. Pode fazer uma captura de ecrã da imagem ou usar o texto.</p>`}`}
+/* ============ RENDER GERAL ============ */
+function renderTabs(){
+  const p=pending();
+  const t=[["recipes","📖","Receitas"],["week","📅","Semana"],["shop","🛒","Compras"]];
+  $("#tabs").innerHTML=t.map(([k,i,l])=>`<button class="tab ${view===k?"on":""}" data-a="tab" data-v="${k}"><span class="ic">${i}</span>${l}${k==="shop"&&p?`<span class="badge">${p}</span>`:""}</button>`).join("");
+  $("#famlabel").textContent=pessoas();
+}
+function render(){
+  $("#app").innerHTML=view==="recipes"?vRecipes():view==="week"?vWeek():vShop();
+  renderTabs();
+  if(view==="recipes")renderList();
+}
+function todayName(){const d=new Date().getDay();return DAYS[d===0?6:d-1]}
+
+/* ============ SUGERIR SEMANA ============ */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function suggest(){
+  const used=new Set(Object.values(S.plan).flat());
+  const pool=(f)=>shuffle(RECIPES.filter(f));
+  const pools={bf:pool(x=>x.cat==="Pequeno-almoço"),soup:pool(x=>x.cat==="Sopa"),main:pool(x=>["Carne","Peixe","Vegetariano","Massa e arroz"].includes(x.cat)),des:pool(x=>x.cat==="Sobremesa")};
+  const take=(k)=>{const p=pools[k];const f=p.find(x=>!used.has(x.id))||p[0];used.add(f.id);return f.id};
+  let filled=0;
+  const put=(d,s,k)=>{if(!slotItems(d,s).length){S.plan[pk(d,s)]=[take(k)];filled++}};
+  DAYS.forEach((d,i)=>{
+    put(d,"Pequeno-almoço","bf");
+    put(d,"Almoço","main");
+    put(d,"Jantar",i%2===0?"soup":"main");
+  });
+  ["Sábado","Domingo"].forEach(d=>{const ids=slotItems(d,"Almoço");if(ids.length===1&&BY[ids[0]].cat!=="Sobremesa"){S.plan[pk(d,"Almoço")].push(take("des"))}});
+  save();render();toast(filled?"Semana sugerida":"Todos os espaços já estão preenchidos");
+}
+
+/* ============ AÇÕES ============ */
+function act(a,el,e){
+  const id=el.dataset.id,v=el.dataset.v;
+  switch(a){
+    case "overlay": if(e.target===el){sheet=null;renderSheet()} break;
+    case "close": sheet=null;renderSheet();break;
+    case "tab": view=v;sheet=null;clearArm=false;renderSheet();render();window.scrollTo(0,0);break;
+    case "fam": S.family=Math.min(12,Math.max(1,S.family+Number(el.dataset.d)));save();render();if(sheet)renderSheet();break;
+    case "cat": F.cat=v;render();break;
+    case `aut`: F.aut=v;render();break;
+    
+    case "flag": F.flags[v]=!F.flags[v];render();break;
+    case "fav": {e.stopPropagation();const i=S.favs.indexOf(id);if(i>=0)S.favs.splice(i,1);else S.favs.push(id);save();if(view==="recipes")renderList();if(sheet&&sheet.type==="detail")renderSheet();break}
+    case "open": sheet={type:"detail",id};renderSheet();break;
+    case "addsheet": {const rc=BY[id];sheet={type:"add",id,day:todayName(),slot:rc.cat==="Pequeno-almoço"?"Pequeno-almoço":"Almoço"};renderSheet();break}
+    case "setday": sheet.day=v;renderSheet();break;
+    case "setslot": sheet.slot=v;renderSheet();break;
+    case "confirmadd": {const k=pk(sheet.day,sheet.slot);(S.plan[k]=S.plan[k]||[]).push(sheet.id);save();toast("Adicionado a "+sheet.day+" ("+sheet.slot.toLowerCase()+")");sheet=null;renderSheet();render();break}
+    case "pick": sheet={type:"pick",day:el.dataset.d,slot:el.dataset.s,q:"",all:false};renderSheet();break;
+    case "pickall": sheet.all=!sheet.all;renderSheet();break;
+    case "pickadd": {const k=pk(sheet.day,sheet.slot);(S.plan[k]=S.plan[k]||[]).push(id);save();toast("Adicionado");sheet=null;renderSheet();render();break}
+    case "rm": {const k=pk(el.dataset.d,el.dataset.s);S.plan[k].splice(Number(el.dataset.i),1);save();render();break}
+    case "suggest": suggest();break;
+    case "clear":
+      if(!clearArm){clearArm=true;render();clearTimeout(act.t);act.t=setTimeout(()=>{clearArm=false;if(view==="week")render()},3000)}
+      else{S.plan={};S.checked={};clearArm=false;save();render();toast("Semana limpa")}
+      break;
+    case "chk": S.checked[el.dataset.k]=!S.checked[el.dataset.k];save();render();break;
+    case "chkx": {const x=S.extras[Number(el.dataset.i)];x.done=!x.done;save();render();break}
+    case "rmx": S.extras.splice(Number(el.dataset.i),1);save();render();break;
+    case "addx": {const inp=$("#xin");const t=inp.value.trim();if(t){S.extras.push({t,done:false});save();render();$("#xin").focus()}break}
+    case "uncheck": S.checked={};S.extras.forEach(x=>x.done=false);save();render();break;
+    case "opt": opt[v]=!opt[v];render();break;
+    case "copyshop": copyText(shopText(opt));break;
+    case "shareshop": shareText("Lista de compras",shopText(opt));break;
+    case "exprecipe": {const rc=BY[id];sheet={type:"export",title:rc.n,text:recipeText(rc)};renderSheet();break}
+    case "copysheet": copyText(sheet.text);break;
+    case `weekexp`: if(!Object.values(S.plan).some(a=>a.length)){toast(`Adicione primeiro receitas à semana`);break}sheet={type:`weekexp`};renderSheet();buildPreview();break;
+    case `dlpng`: saveWeek(`png`);break;
+    case `dlpdf`: saveWeek(`pdf`);break;
+    case `shoppdf`: saveShop(`pdf`);break;
+    case `shoppng`: saveShop(`png`);break;
+    case `weektext`: sheet={type:`export`,title:`Plano da semana`,text:planText()};renderSheet();break;
+    case "sharesheet": shareText(sheet.title,sheet.text);break;
+  }
+}
+document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(el)act(el.dataset.a,el,e)});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.id==="xin"){act("addx",e.target,e)}
+  if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("card")){e.preventDefault();act("open",e.target,e)}
+  if(e.key==="Escape"&&sheet){sheet=null;renderSheet()}
+});
+document.addEventListener("input",e=>{
+  if(e.target.id==="q"){F.q=e.target.value;renderList()}
+  if(e.target.id==="pq"){sheet.q=e.target.value;$("#plist").innerHTML=pickList()}
+});
+render();
+</script>
+</body>
+</html>
